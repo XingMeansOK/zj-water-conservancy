@@ -1,222 +1,92 @@
 <template>
-  <div id="map" class="vue2leaflet-map">
+  <div>
     <slot></slot>
   </div>
 </template>
 
 <script>
-// 地图组件
-import L from 'leaflet'
-import eventsBinder from '../utils/eventsBinder.js';
-import propsBinder from '../utils/propsBinder.js';
 
-const events = [
-  'click',
-  'dblclick',
-  'mousedown',
-  'mouseup',
-  'mouseover',
-  'mouseout',
-  'mousemove',
-  'contextmenu',
-  'focus',
-  'blur',
-  'preclick',
-  'load',
-  'unload',
-  'viewreset',
-  'movestart',
-  'move',
-  'moveend',
-  'dragstart',
-  'drag',
-  'dragend',
-  'zoom',
-  'zoomstart',
-  'zoomend',
-  'zoomanim',
-  'zoomlevelschange',
-  'resize',
-  'autopanstart',
-  'layeradd',
-  'layerremove',
-  'baselayerchange',
-  'overlayadd',
-  'overlayremove',
-  'locationfound',
-  'locationerror',
-  'popupopen',
-  'popupclose'
-];
-const props = {
-  center: {
-    type: [Object, Array],
-    custom: true,
-    default: undefined,
-  },
-  bounds: {
-    custom: true,
-    default: undefined,
-  },
-  zoom: {
-    type: Number,
-    default: undefined,
-  },
-  minZoom: {
-    type: Number,
-    default: undefined,
-  },
-  maxZoom: {
-    type: Number,
-    default: undefined,
-  },
-  paddingBottomRight: {
-    custom: true,
-    default: null,
-  },
-  paddingTopLeft: {
-    custom: true,
-    default: null
-  },
-  padding: {
-    custom: true,
-    default: null
-  },
-  worldCopyJump: {
-    type: Boolean,
-    default: false
-  },
-  crs: {
-    custom: true,
-    default: () => L.CRS.EPSG3857,
-  },
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
-};
+/**
+ * ol和proj4都以静态文件的方式引进来的，方便调试
+ *
+ * 另外，既然这个是顶层的地图容器，那就在这里注明：
+ * 所有的openlayers相关的对象、属性，全都认为是私有，不对外暴露。暴露出去的只有标签。
+ * 所以，openlayers相关的都通过setget函数来定义
+ *
+ */
 
 export default {
-  name: 'MapContainer',
-  props: props,
-  mounted() {
-    const options = this.options;
-    Object.assign(options, {
-      minZoom: this.minZoom,
-      maxZoom: this.maxZoom,
-      worldCopyJump: this.worldCopyJump,
-      crs: this.crs,
-    });
-    if (this.center != null) {
-      options.center = this.center;
-    }
-    if (this.zoom != null) {
-      options.zoom = this.zoom;
-    }
-    this.mapObject = L.map(this.$el, options);
-    eventsBinder(this, this.mapObject, events);
-    propsBinder(this, this.mapObject, props);
-debugger
-    for (var i = 0; i < this.$children.length; i++) {
-      if (typeof this.$children[i].deferredMountedTo === "function") {
-        this.$children[i].deferredMountedTo(this.mapObject);
-      } else if (typeof this.$children[i].$children[0].deferredMountedTo === "function") {
-        this.$children[i].$children[0].deferredMountedTo(this.mapObject);
-      }
-    }
-
-    this.setBounds(this.bounds);
-    this.mapObject.whenReady(function() {
-      this.$emit('l-ready')
-    }, this);
-
-
-    var map = L.map('map', {
-      center: [40, 100],
-      zoom: 4
-      });
-    // 影像
-    L.tileLayer("http://114.215.249.116:6080/arcgis/rest/services/zjslmap/zjslvectormap/MapServer/WMTS/1.0.0/WMTSCapabilities.xml", {
-    subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"]
-    }).addTo(map);
+  name: 'mapContainer',
+  data() {
+    return {
+      _olMap: null
+    };
   },
-  methods: {
-    setCenter(newVal, oldVal) {
-      if (newVal == null) {
-        return;
-      }
-      let wasUndefined = false;
-      let oldLat = 0;
-      let oldLng = 0;
-      if (oldVal == null) {
-        wasUndefined = true;
-      } else if (Array.isArray(oldVal)) {
-        oldLat = oldVal[0];
-        oldLng = oldVal[1];
-      } else {
-        oldLat = oldVal.lat;
-        oldLng = oldVal.lng;
-      }
-      let newLat = 0;
-      let newLng = 0;
-      if (Array.isArray(newVal)) {
-        newLat = newVal[0];
-        newLng = newVal[1];
-      } else {
-        newLat = newVal.lat;
-        newLng = newVal.lng;
-      }
-      let centerChanged = wasUndefined || (newLat != oldLat) || (newLng != oldLng);
-      if (centerChanged) {
-        this.mapObject.setView(newVal, this.zoom);
-      }
-    },
-    setBounds(newVal, oldVal) {
-      if (!newVal) {
-        return;
-      }
-      if (newVal instanceof L.LatLngBounds) {
-        if (!newVal.isValid()) {
-          return;
-        }
-      } else if (!Array.isArray(newVal)) {
-        return;
-      }
-      var options = {};
-      if (this.padding) {
-        options.padding = this.padding;
-      } else {
-        if (this.paddingBottomRight) {
-          options.paddingBottomRight = this.paddingBottomRight;
-        }
-        if (this.paddingTopLeft) {
-          options.paddingTopLeft = this.paddingTopLeft;
-        }
-      }
-      this.mapObject.fitBounds(newVal, options);
-    },
-    setPaddingBottomRight(newVal, oldVal) {
-      this.paddingBottomRight = newVal;
-    },
-    setPaddingTopLeft(newVal, oldVal) {
-      this.paddingTopLeft = newVal;
-    },
-    setPadding(newVal, oldVal) {
-      this.padding = newVal;
-    },
-    setCrs(newVal, oldVal) {
-      console.log('Changing CRS is not yet supported by Leaflet');
-    },
-    fitBounds(bounds) {
-      this.mapObject.fitBounds(bounds);
-    }
+  // props,
+  // methods,
+  mounted () {
+
+    // 地图根节点的样式
+    this.$el.style.overflow = "hidden";
+    this.$el.style.height = '100%';
+    this.$el.style.width = '100%';
+
+    // OpenLayers不支持4490坐标系，需要自定义坐标系
+    proj4.defs( "EPSG:4490", "+proj=longlat +ellps=GRS80 +no_defs" );
+    var projection4490 = new ol.proj.get('EPSG:4490');
+    projection4490.setExtent([-180,-90,180,90]);
+
+
+     var layers = [
+
+       // baseLayer,
+
+     ];
+
+    this._olMap = new ol.Map({
+      target: this.$el,
+      layers: layers,
+      view: new ol.View({
+        center: [120, 29.4],
+        projection: 'EPSG:4490',
+        extent: [118.02252448821446,  27.04527653758214, 123.15774781361063, 31.18247145139634],
+        zoom: 8,
+        minZoom: 7,
+        maxZoom: 20
+      })
+    });
+
+    // 添加瓦片
+    this.$on("addtile", l => this._olMap.addLayer( l ));
+    // 移除瓦片
+    this.$on("removetile", l => this._olMap.removeLayer( l ));
+
+
+    Object.defineProperties(this, /** @lends module:map/map# */{
+      /**
+       * OpenLayers的Map实例
+       * @type {ol.Map|undefined}
+       */
+      $map: {
+        enumerable: true,
+        get: () => this.$olObject,
+      },
+      /**
+       * OpenLayers view instance.
+       * @type {ol.View|undefined}
+       */
+      $view: {
+        enumerable: true,
+        get: () => this._view,
+      },
+    })
   },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .vue2leaflet-map {
+  .vue2ol {
     height: 100%;
     width: 100%;
   }

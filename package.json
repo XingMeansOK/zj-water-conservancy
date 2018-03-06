@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "iview": "^2.9.2",
-    "leaflet": "^1.3.1",
+    "ol": "^4.6.4",
+    "openlayers": "^4.6.4",
+    "proj4": "^2.4.4",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

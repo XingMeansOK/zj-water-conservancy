@@ -1,90 +1,92 @@
 <template>
+  <div>
+    <slot></slot>
+  </div>
 </template>
 
 <script>
-import propsBinder from '../utils/propsBinder.js';
-import eventsBinder from '../utils/eventsBinder.js';
-const events = [
-  'loading',
-  'tileunload',
-  'tileloadstart',
-  'tileerror',
-  'tileload',
-  'load',
-  'add',
-  'remove',
-  'popupopen',
-  'popupclose',
-  'tooltipopen',
-  'tooltipclose'
-];
-const props = {
-  url: String,
-  attribution: {
-    type: String,
-    custom: true
-  },
-  detectRetina: {
-    type: Boolean,
-    custom: false,
-    default: false
-  },
-  token: {
-    type: String,
-    custom: true
-  },
-  opacity: {
-    type: Number,
-    custom: false,
-    default: 1.0
-  },
-  zIndex: {
-    type: Number,
-    default: 1
-  },
-  options: {
-    type: Object,
-    default: function() {
-      return {};
+
+  /**
+   * @vueMethods
+   */
+
+   const tileGridWMTS = new ol.tilegrid.WMTS({
+     //分辨率，每级对应的分辨率，可在arcgis server的mapserver最后面找到
+        resolutions: [
+          1.406250026231581,
+          0.7031250131157905,
+          0.3515625065578952,
+          0.1757812532789476,
+          0.0878906266394738,
+          0.0439453133197369,
+          0.02197265665986845,
+          0.010986328329934226,
+          0.005493164164967113,
+          0.0027465820824835565,
+          0.0013732910412417782,
+          6.866455206208891E-4,
+          3.4332276031044456E-4,
+          1.7166138015522228E-4,
+          8.583069007761114E-5,
+          4.291534503880557E-5,
+          2.1457672519402785E-5,
+          1.0728836259701392E-5,
+          5.364418129850696E-6,
+          2.682209064925348E-6,
+          1.341104532462674E-6
+        ],
+        //原点
+        origin: [ -180.0, 90.0 ],
+        tileSize: 256,
+        //每级对应的id，与分辨率数组长度一致，必填。可在WMTS描述文档的<ows:Identifier>找到
+        matrixIds: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", ]
+    });
+
+    const options = {
+        name: "basemap",
+        tileGrid: tileGridWMTS,
+        matrixSet: 'default028mm',
+        projection: 'EPSG:4490',
+        layer: "zjslmap_zjslvectormap",
+        style: "default",
+        version: "1.0.0",
+        format: "image/png",
+        transition: 0,
+        opaque: 0,
+        requestEncoding: "REST",
+        //路径可以在WMTS描述文档里面的<ResourceURL>里找到
+        url:
+        'http://114.215.249.116:6080/arcgis/rest/services/zjslmap/zjslvectormap/MapServer/WMTS/tile/1.0.0/zjslmap_zjslvectormap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png'
     }
-  }
-};
-export default {
-  props: props,
-  mounted() {
-    const options = this.options;
-    const otherPropertytoInitialize = [ "attribution", "token", "detectRetina", "opacity", "zIndex" ];
-    for (var i = 0; i < otherPropertytoInitialize.length; i++) {
-      const propName = otherPropertytoInitialize[i];
-      if(this[propName]) {
-        options[propName] = this[propName];
-      }
-    }
-    this.mapObject = L.tileLayer(this.url, options);
-    eventsBinder(this, this.mapObject, events);
-    propsBinder(this, this.mapObject, props);
-  },
-  methods: {
-    deferredMountedTo(parent) {
-      debugger
-      this.mapObject.addTo(parent);
-      this.attributionControl = parent.attributionControl;
-      for (var i = 0; i < this.$children.length; i++) {
-        if (typeof this.$children[i].deferredMountedTo === "function") {
-          this.$children[i].deferredMountedTo(this.mapObject);
-        }
+
+  export default {
+    name: 'tilelayer',
+    data() {
+      return {
+        _olLayer: null, // 用来在内部保存layer的引用
       }
     },
-    setAttribution(val, old) {
-      this.attributionControl.removeAttribution(old);
-      this.attributionControl.addAttribution(val);
+    created() {
+
+      Object.defineProperties( this, {
+          layer: {
+            enumerable: true,
+            get: () => this._olLayer,
+          }
+      })
+
     },
-    setToken(val) {
-      this.options.token = val;
+    mounted() {
+      /**
+       * 底图图层
+       */
+      this._olLayer = new ol.layer.Tile({
+          extent: [118.02252448821446,  27.04527653758214, 123.15774781361063, 31.18247145139634],
+          source: new ol.source.WMTS(options)
+      });
+
+      // 将当前图层添加到ol.Map中
+      this.$nextTick(t => this.$parent.$emit("addtile", this.layer));
     }
-  },
-  beforeDestroy() {
-    this.$parent.mapObject.removeLayer(this.mapObject);
   }
-};
 </script>

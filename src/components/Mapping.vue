@@ -1,8 +1,8 @@
 <template>
   <layout :style="{height: '100%', width: '100%'}">
       <MapMenu/>
-      <MapContainer :zoom="zoom" :center="center">
-        <TileLayer :url="url"></TileLayer>
+      <MapContainer>
+        <TileLayer/>
       </MapContainer>
   </layout>
 </template>
@@ -23,7 +23,6 @@
     },
     data () {
       return {
-        url: 'http://114.215.249.116:6080/arcgis/rest/services/zjslmap/zjslvectormap/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
         zoom: 12,
         center: [120.19, 30.26],
       }
