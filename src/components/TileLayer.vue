@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     deferredMountedTo(parent) {
-      debugger
+      // debugger
       this.mapObject.addTo(parent);
       this.attributionControl = parent.attributionControl;
       for (var i = 0; i < this.$children.length; i++) {

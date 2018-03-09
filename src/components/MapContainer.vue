@@ -116,7 +116,7 @@ export default {
     this.mapObject = L.map(this.$el, options);
     eventsBinder(this, this.mapObject, events);
     propsBinder(this, this.mapObject, props);
-debugger
+// debugger
     for (var i = 0; i < this.$children.length; i++) {
       if (typeof this.$children[i].deferredMountedTo === "function") {
         this.$children[i].deferredMountedTo(this.mapObject);
