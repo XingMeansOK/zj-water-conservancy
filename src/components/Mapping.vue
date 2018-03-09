@@ -1,8 +1,8 @@
 <template>
   <layout :style="{height: '100%', width: '100%'}">
-      <MapMenu/>
-      <MapContainer :zoom="zoom" :center="center">
-        <TileLayer :url="url"></TileLayer>
+      <MapMenu :params = 'testParam'/>
+      <MapContainer>
+        <TileLayer :params = 'testParam'/>
       </MapContainer>
   </layout>
 </template>
@@ -13,6 +13,8 @@
   import MapMenu from './MapMenu.vue'
   import MapContainer from './MapContainer.vue'
   import TileLayer from './TileLayer.vue'
+  import { TestMap } from '../core/mappingParams.js'
+  import observe from '../core/observer.js'
 
   export default {
     name: 'Mapping',
@@ -23,10 +25,13 @@
     },
     data () {
       return {
-        url: 'http://114.215.249.116:6080/arcgis/rest/services/zjslmap/zjslvectormap/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
-        zoom: 12,
-        center: [120.19, 30.26],
+        testParam: null,
       }
+    },
+    created() {
+      let p = new TestMap();
+      observe( p );
+      this.testParam = p;
     }
   }
 </script>

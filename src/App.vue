@@ -33,8 +33,6 @@ export default {
   name: 'App',
   data () {
     return {
-        theme1: 'light',
-        transitionName: '',
         activeName: 'map'
     }
   },
@@ -51,7 +49,6 @@ export default {
 </script>
 
 <style>
-  @import "../node_modules/leaflet/dist/leaflet.css";
 
   ul.ivu-menu > li > span {
     display: inline-block;

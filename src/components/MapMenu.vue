@@ -35,9 +35,17 @@
 
 export default {
   name: 'MapMenu',
+  props: ['params'],
   data () {
     return {
     }
+  },
+  mounted() {
+    var a = this;
+    setTimeout( function() {
+      a.params.param4.a = 2;
+      console.log( '参数改变' )
+     },1500 );
   }
 }
 </script>
