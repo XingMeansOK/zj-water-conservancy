@@ -3,6 +3,8 @@
       <MapMenu :params = 'testParam'/>
       <MapContainer>
         <TileLayer :params = 'testParam'/>
+        <component v-bind:is='type' :params = 'testParam'></component>
+        <!-- <ChartLayer :params = 'testParam'/> -->
       </MapContainer>
   </layout>
 </template>
@@ -13,7 +15,8 @@
   import MapMenu from './MapMenu.vue'
   import MapContainer from './MapContainer.vue'
   import TileLayer from './TileLayer.vue'
-  import { TestMap } from '../core/mappingParams.js'
+  import ChartLayer from './ChartLayer.vue'
+  import { TestMap, CHARTMAP } from '../core/mappingParams.js'
   import observe from '../core/observer.js'
 
   export default {
@@ -21,14 +24,18 @@
     components: {
       MapMenu,
       MapContainer,
-      TileLayer
+      TileLayer,
+      ChartLayer,
     },
     data () {
       return {
+        type: CHARTMAP,
         testParam: null,
       }
     },
     created() {
+      // 没有路由缓存，所以，每次路由改变都会重新构建一遍组件
+      debugger
       let p = new TestMap();
       observe( p );
       this.testParam = p;

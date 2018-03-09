@@ -12,6 +12,9 @@
  * 参考这个方式，实现，openlayers图层随制图参数改变而自动更新
  */
 
+// 制图类型常量
+const CHARTMAP = 'ChartLayer';
+
 function TestMap() {
 
   this.param1 = '1';
@@ -27,5 +30,6 @@ function TestMap() {
 
 
 export {
-  TestMap
+  TestMap,
+  CHARTMAP
 }
