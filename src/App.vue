@@ -4,9 +4,12 @@
     <div class="layout">
       <layout :style="{height: '100vh'}">
           <Header>
-              <Menu mode="horizontal" theme="light" active-name="activeName">
+              <Menu ref="mapmenu" mode="horizontal" theme="light" active-name="activeName">
                 <MenuItem name="home">
                     <router-link tag="span" to="/">主页</router-link>
+                </MenuItem>
+                <MenuItem name="data">
+                    <router-link tag="span" to="/data">数据</router-link>
                 </MenuItem>
                 <MenuItem name="map">
                     <router-link tag="span" to="/map">地图</router-link>
@@ -14,6 +17,7 @@
               </Menu>
           </Header>
           <transition name="slide-fade">
+            <!-- <router-view name="template1"/> -->
             <router-view/>
           </transition>
 
@@ -24,6 +28,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'App',
   data () {
@@ -34,6 +39,11 @@ export default {
   created () {
     // 页面初始化时默认的active menuitem，根据路由决定
     this.activeName = this.$route.path.slice(1);
+  },
+  watch: {
+    '$route' () {
+      this.$refs.mapmenu.currentActiveName = this.$route.path.slice(1) || 'home';
+    }
   }
 }
 </script>
