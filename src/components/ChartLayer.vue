@@ -18,12 +18,34 @@ export default {
     /**
      * openlayers图层对象
      */
-    this._olLayer = new ol.layer.Tile({
-        extent: [118.02252448821446,  27.04527653758214, 123.15774781361063, 31.18247145139634],
-        source: new ol.source.WMTS(options)
+    var iconFeature = new ol.Feature({
+      geometry: new ol.geom.Point([120, 29.4]),
+      name: 'Null Island',
+      population: 4000,
+      rainfall: 500
     });
 
-    var params = this.params
+    var iconStyle = new ol.style.Style({
+      image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: 'https://openlayers.org/en/v4.6.4/examples/data/icon.png'
+      }))
+    });
+
+    iconFeature.setStyle(iconStyle);
+
+    var vectorSource = new ol.source.Vector({
+      features: [iconFeature]
+    });
+
+    this._olLayer = new ol.layer.Vector({
+      source: vectorSource
+    });
+
+
+    var params = this.params;
 
     // 图层对象都要定义一个update函数，用于实时更新制图参数
     this._olLayer.update = function() {
