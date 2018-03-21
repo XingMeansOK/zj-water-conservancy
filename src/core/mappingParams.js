@@ -12,24 +12,197 @@
  * 参考这个方式，实现，openlayers图层随制图参数改变而自动更新
  */
 
-// 制图类型常量
-const CHARTMAP = 'ChartLayer';
+function PolylineParam(type) {
 
-function TestMap() {
+  PublicProp.call( this, 'LinePanel', 'LineLayer' );
 
-  this.param1 = '1';
-  this.param2 = 'aa';
-  // this.param3 = [ 1, 2, 3 ];
-  this.param4 = {
-    a: '123',
-    b: '456'
-  };
+  /**
+   *
+   * @type {ol.Color|ol.ColorLike}
+   */
+  this.color = 'rgba(255, 169, 0, 1)';
 
+  /**
+   *
+   * @type {string|undefined}
+   */
+  this.lineCap = null;
+
+  /**
+   *
+   * @type {Array.<number>}
+   */
+  this.lineDash = null;
+
+  /**
+   *
+   * @type {number|undefined}
+   */
+  this.lineDashOffset = null;
+
+  /**
+   *
+   * @type {string|undefined}
+   */
+  this.lineJoin = null;
+
+  /**
+   *
+   * @type {number|undefined}
+   */
+  this.miterLimit = null;
+
+  /**
+   *
+   * @type {number|undefined}
+   */
+  this.width = 0.4;
+
+  /**
+   *
+   * @type {string|undefined}
+   */
+  this.checksum = undefined;
+
+};
+
+function PointParam( type ) {
+
+  PublicProp.call( this, 'PointPanel', 'PointLayer' );
+
+  this.color = '#8959A8';
+  this.crossOrigin = 'anonymous';
+  // this.src = 'https://openlayers.org/en/v4.6.4/examples/data/dot.png';
+  this.src = './static/2.png';
+  this.opacity = 1;
+
+  this.scale = 0.1;
+
+  // Object.defineProperty( this, 'squareSize', {
+  //   set: function( newValue ) {
+  //     this.size = [ newValue, newValue ];
+  //   },
+  //   get: function() {
+  //     return this.size[0];
+  //   }
+  // } )
+
+}
+
+function PolygonPanel( type ) {
+
+  PublicProp.call( 'PolygonPanel', 'PolygonLayer' );
+  this.color = '#FFFF00';
+
+}
+
+function PointParam0000( type ) {
+
+  PublicProp.call( this, 'PointPanel', 'PointLayer' );
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.anchor = [0.5, 0.5];
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.normalizedAnchor = null;
+
+  /**
+   * @private
+   * @type {ol.style.IconOrigin}
+   */
+  this.anchorOrigin = null;
+
+  /**
+   * @private
+   * @type {ol.style.IconAnchorUnits}
+   */
+  this.anchorXUnits = null;
+
+  /**
+   * @private
+   * @type {ol.style.IconAnchorUnits}
+   */
+  this.anchorYUnits = null;
+
+  /**
+   * @private
+   * @type {?string}
+   */
+  this.crossOrigin = 'anonymous';
+
+  this.src = 'https://openlayers.org/en/v4.6.4/examples/data/dot.png';
+
+  // ol.asserts.assert(!(src !== undefined && image),
+  //     4); // `image` and `src` cannot be provided at the same time
+  // ol.asserts.assert(!image || (image && imgSize),
+  //     5); // `imgSize` must be set when `image` is provided
+  //
+  // if ((src === undefined || src.length === 0) && image) {
+  //   src = image.src || ol.getUid(image).toString();
+  // }
+  // ol.asserts.assert(src !== undefined && src.length > 0,
+  //     6); // A defined and non-empty `src` or `image` must be provided
+
+  /**
+   * @private
+   * @type {ol.Color}
+   */
+  this.color = 'rgba(255, 169, 0, 1)';
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.offset = [0, 0];
+
+  /**
+   * @private
+   * @type {ol.style.IconOrigin}
+   */
+  this.offsetOrigin = ol.style.IconOrigin.TOP_LEFT;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.origin = null;
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.size = 10;
+
+}
+
+/**
+ * 公共的属性
+ * @param       {[type]} panel [description]
+ * @param       {[type]} layer [description]
+ * @constructor
+ */
+function PublicProp( panel, layer ) {
+  // 是否可见
+  this.visible = true;
+  // 数据源
+  this.url = null;
+  // 对应的图层类型
+  this.layer = layer;
+  // 对饮的面板类型
+  this.panel = panel;
 }
 
 
 
 export {
   TestMap,
-  CHARTMAP
+  PolylineParam,
+  PointParam,
+  PolygonPanel,
 }

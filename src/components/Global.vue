@@ -6,6 +6,7 @@
   export default
   {
     // 制图数据
+
     mappingData:[],
     // 制图类型
     type: null,
@@ -25,5 +26,29 @@
   {"id":"12","type":"default","name":"围垦","geotype":"polygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
   {"id":"13","type":"default","name":"引调水","geotype":"polyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/yindiaoshui/MapServer"},
 ]
+
+    // 制图类型
+    type: 'template2',
+    mappingData: [
+      {
+        url: 'http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer/'
+         + '0' + '/query/?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=&geometryType=esriGeometryPolyline&outFields=*&where=1=1',
+        type: 'esriGeometryPolyline',
+        name: '堤防工程'
+      },
+      {
+        url: 'http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiwencezhan/MapServer/'
+         + '0' + '/query/?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=&geometryType=esriGeometryPoint&outFields=*&where=1=1',
+        type: 'esriGeometryPoint',
+        name: '水文观测'
+      },
+      {
+        url: 'http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiku/MapServer/'
+         + '0' + '/query/?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=&geometryType=esriGeometryPolygon&outFields=*&where=1=1',
+        type: 'esriGeometryPolygon',
+        name: '水库'
+      },
+    ],
+
   }
 </script>

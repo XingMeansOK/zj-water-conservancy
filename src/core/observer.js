@@ -100,7 +100,8 @@ function defineReactive ( obj, key, val, dep ) {
   const getter = property && property.get;
   const setter = property && property.set;
 
-  let childOb = observe(val, dep); // 如果子属性也是对象，也为其添加Observer
+  // 暂时不需要监视子属性
+  // let childOb = observe(val, dep); // 如果子属性也是对象，也为其添加Observer
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
@@ -120,7 +121,7 @@ function defineReactive ( obj, key, val, dep ) {
       } else {
         val = newVal;
       }
-      childOb = observe(newVal, dep);
+      // childOb = observe(newVal, dep);
       // 提醒订阅者数据更新
       dep.notify();
     }

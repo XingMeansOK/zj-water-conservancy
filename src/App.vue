@@ -25,7 +25,7 @@
                       地图
                     </router-link>
                 </MenuItem>
-              </Menu>
+              </Menu> -->
           </Header>
           <transition name="slide-fade">
             <!-- <router-view name="template1"/> -->
@@ -91,9 +91,12 @@ export default {
   }
 
   .ivu-layout-header {
-    height: 60px;
-    padding:0;
+    height: 70px;
+    /* padding:10px; */
+    box-shadow: 0 1px 1px rgba(0,0,0,.08);
+    z-index: 10000;
   }
+
   .icon {
     margin-right: 5px;
   }
@@ -105,5 +108,22 @@ export default {
     background-color: rgb(73, 80, 96);
     border-color: rgb(73, 80, 96);
   } */
+  .ivu-steps {
+    width: 30%;
+  }
 
+  .ivu-select-dropdown.ivu-transfer-no-max-height{
+    margin: 5px 0px 0px -182px;
+  }
+
+  .ivu-spin-fullscreen { z-index: 10001 }
+
+  .ivu-tabs-bar {
+    display: none;
+  }
+
+  .layercardbox {
+    background:#fff;
+    margin-bottom: 10px
+  }
 </style>
