@@ -1,7 +1,6 @@
 <template>
   <div>
     <Card class="template-card">
-
       <Icon class="template-icon" :type="name" :color="color" :size= "size" />
       <img class="template-pic" :src="pic" />
       <p class="template-name">{{label}}</p>
@@ -29,12 +28,6 @@
       color: {
         type: [String]
       }
-    },
-    data () {
-      return {
-
-
-      }
     }
 
   }
@@ -43,13 +36,13 @@
   .template-card {
     width: 220px;
     height: 200px;
-    /* width: 100%;
-    height: 100%; */
     text-align: center;
   }
   .template-name {
     font-size: 16px;
     text-align: center;
+    color: rgb(35,53,77);
+
   }
   .template-pic {
     width: 70%
