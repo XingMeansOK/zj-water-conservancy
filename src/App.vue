@@ -4,15 +4,26 @@
     <div class="layout">
       <layout :style="{height: '100vh'}">
           <Header>
-              <Menu ref="mapmenu" mode="horizontal" theme="light" active-name="activeName">
-                <MenuItem name="home">
-                    <router-link tag="span" to="/">主页</router-link>
+              <Menu ref="mapmenu" mode="horizontal"  active-name="activeName" theme="dark">
+              <!-- <Menu ref="mapmenu" mode="horizontal"  active-name="activeName" theme="primary"> -->
+
+                <MenuItem  name="home">
+                    <router-link tag="span" to="/">
+                      <Icon type="images" class="icon"></Icon>
+                      模板
+                    </router-link>
                 </MenuItem>
                 <MenuItem name="data">
-                    <router-link tag="span" to="/data">数据</router-link>
+                    <router-link tag="span" to="/data">
+                      <Icon type="stats-bars" class="icon"></Icon>
+                      数据
+                    </router-link>
                 </MenuItem>
                 <MenuItem name="map">
-                    <router-link tag="span" to="/map">地图</router-link>
+                    <router-link tag="span" to="/map">
+                      <Icon type="map" class="icon"></Icon>
+                      地图
+                    </router-link>
                 </MenuItem>
               </Menu>
           </Header>
@@ -49,6 +60,9 @@ export default {
 </script>
 
 <style>
+.q {
+  float: right;
+}
 
   ul.ivu-menu > li > span {
     display: inline-block;
@@ -80,5 +94,16 @@ export default {
     height: 60px;
     padding:0;
   }
+  .icon {
+    margin-right: 5px;
+  }
+  /* .mapping-but {
+    height: 40px;
+    width: 150px;
+    margin: 10px;
+    font-size: 13px;
+    background-color: rgb(73, 80, 96);
+    border-color: rgb(73, 80, 96);
+  } */
 
 </style>
