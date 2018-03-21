@@ -3,8 +3,8 @@
 
     <div class="layout">
       <layout :style="{height: '100vh'}">
-          <Header>
-              <Menu ref="mapmenu" mode="horizontal" theme="light" active-name="activeName">
+          <Header :style="{backgroundColor: '#fff'}" >
+              <!-- <Menu ref="mapmenu" mode="horizontal" theme="dark" active-name="activeName">
                 <MenuItem name="home">
                     <router-link tag="span" to="/">主页</router-link>
                 </MenuItem>
@@ -14,7 +14,17 @@
                 <MenuItem name="map">
                     <router-link tag="span" to="/map">地图</router-link>
                 </MenuItem>
-              </Menu>
+              </Menu> -->
+              <!-- <Steps :current="1" size="small">
+                  <Step title="模板" content="这里是该步骤的描述信息"></Step>
+                  <Step title="数据" content="这里是该步骤的描述信息"></Step>
+                  <Step title="制图" content="这里是该步骤的描述信息"></Step>
+              </Steps> -->
+              <Breadcrumb separator=">">
+                  <BreadcrumbItem to="/">模板</BreadcrumbItem>
+                  <BreadcrumbItem to="/data">数据</BreadcrumbItem>
+                  <BreadcrumbItem to="/map">地图</BreadcrumbItem>
+              </Breadcrumb>
           </Header>
           <transition name="slide-fade">
             <!-- <router-view name="template1"/> -->
@@ -77,8 +87,27 @@ export default {
   }
 
   .ivu-layout-header {
-    height: 60px;
-    padding:0;
+    height: 70px;
+    /* padding:10px; */
+    box-shadow: 0 1px 1px rgba(0,0,0,.08);
+    z-index: 10000;
+  }
+  .ivu-steps {
+    width: 30%;
   }
 
+  .ivu-select-dropdown.ivu-transfer-no-max-height{
+    margin: 5px 0px 0px -182px;
+  }
+
+  .ivu-spin-fullscreen { z-index: 10001 }
+
+  .ivu-tabs-bar {
+    display: none;
+  }
+
+  .layercardbox {
+    background:#fff;
+    margin-bottom: 10px
+  }
 </style>
