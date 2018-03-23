@@ -25,7 +25,7 @@
                       地图
                     </router-link>
                 </MenuItem>
-              </Menu> -->
+              </Menu>
           </Header>
           <transition name="slide-fade">
             <!-- <router-view name="template1"/> -->

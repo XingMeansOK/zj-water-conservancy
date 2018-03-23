@@ -13,7 +13,7 @@
 
             <!-- <Scroll height=400 > -->
 
-              <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="item in datalist" >
+              <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="item in datalist" :key="item.id">
                 <Checkbox class="data-item" :label="item.name" size="large" >
                   <span class="dataname">{{item.name}}</span>
                   <span class="datatype" v-if="item.type==='default'">默认数据</span>
@@ -71,33 +71,33 @@ export default {
         this.__global__.type = 'template1';
         this.templatename = '自然水系模板';
         this.datalist = [
-          {"id":"5","type":"default","name":"河流","geotype":"polygon","address":" http://114.215.249.116:6080/arcgis/rest/services/zjsl/heliu/MapServer"},
-          {"id":"6","type":"default","name":"湖泊","geotype":"polygon","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/hupo/MapServer"}
+          {"id":"5","type":"default","name":"河流","geotype":"esriGeometryPolygon","address":" http://114.215.249.116:6080/arcgis/rest/services/zjsl/heliu/MapServer"},
+          {"id":"6","type":"default","name":"湖泊","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/hupo/MapServer"}
         ];
         break;
       case '2':
         this.__global__.type = 'template2';
         this.templatename = '水利工程模板';
         this.datalist = [
-          {"id":"0","type":"default","name":"水库","geotype":"polygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiku/MapServer"},
-          {"id":"1","type":"default","name":"泵站","geotype":"point","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/bengzhan/MapServer"},
-          {"id":"2","type":"default","name":"堤防工程","geotype":"polyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
-          {"id":"3","type":"default","name":"灌区工程","geotype":"polygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/guanqugongcheng/MapServer"},
-          {"id":"7","type":"default","name":"农村供水工程","geotype":"point","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/nongcungongshuigongcheng/MapServer"},
-          {"id":"9","type":"default","name":"水电站","geotype":"point","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuidianzhan/MapServer"},
-          {"id":"10","type":"default","name":"水文测站","geotype":"point","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiwencezhan/MapServer"},
-          {"id":"11","type":"default","name":"水闸","geotype":"polyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuizha/MapServer"},
-          {"id":"12","type":"default","name":"围垦","geotype":"polygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
-          {"id":"13","type":"default","name":"引调水","geotype":"polyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/yindiaoshui/MapServer"},
+          {"id":"0","type":"default","name":"水库","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiku/MapServer"},
+          {"id":"1","type":"default","name":"泵站","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/bengzhan/MapServer"},
+          {"id":"2","type":"default","name":"堤防工程","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
+          {"id":"3","type":"default","name":"灌区工程","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/guanqugongcheng/MapServer"},
+          {"id":"7","type":"default","name":"农村供水工程","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/nongcungongshuigongcheng/MapServer"},
+          {"id":"9","type":"default","name":"水电站","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuidianzhan/MapServer"},
+          {"id":"10","type":"default","name":"水文测站","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiwencezhan/MapServer"},
+          {"id":"11","type":"default","name":"水闸","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuizha/MapServer"},
+          {"id":"12","type":"default","name":"围垦","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
+          {"id":"13","type":"default","name":"引调水","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/yindiaoshui/MapServer"},
         ];
         break;
       case '3':
         this.__global__.type = 'template3';
         this.templatename = '防汛工程模板';
         this.datalist = [
-          {"id":"2","type":"default","name":"堤防工程","geotype":"polyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
-          {"id":"11","type":"default","name":"水闸","geotype":"polyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuizha/MapServer"},
-          {"id":"12","type":"default","name":"围垦","geotype":"polygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
+          {"id":"2","type":"default","name":"堤防工程","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
+          {"id":"11","type":"default","name":"水闸","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuizha/MapServer"},
+          {"id":"12","type":"default","name":"围垦","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
         ];
         break;
      }

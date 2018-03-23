@@ -89,10 +89,12 @@ function PointParam( type ) {
 
 }
 
-function PolygonPanel( type ) {
+function PolygonParam( type ) {
 
-  PublicProp.call( 'PolygonPanel', 'PolygonLayer' );
+  PublicProp.call( this, 'PolygonPanel', 'PolygonLayer' );
   this.color = '#FFFF00';
+  // 仅仅使用颜色填充或者是同时使用颜色和纹理
+  this.colorOnly = false;
 
 }
 
@@ -190,11 +192,11 @@ function PointParam0000( type ) {
 function PublicProp( panel, layer ) {
   // 是否可见
   this.visible = true;
-  // 数据源
-  this.url = null;
+  // // 数据源
+  // this.url = null;
   // 对应的图层类型
   this.layer = layer;
-  // 对饮的面板类型
+  // 对应的面板类型
   this.panel = panel;
 }
 
@@ -204,5 +206,5 @@ export {
   TestMap,
   PolylineParam,
   PointParam,
-  PolygonPanel,
+  PolygonParam,
 }

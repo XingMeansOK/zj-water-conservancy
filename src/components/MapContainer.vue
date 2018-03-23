@@ -52,6 +52,9 @@ export default {
       })
     });
 
+    // 地图对象保存至全局
+    this.__global__.olMap = this._olMap;
+
     // 添加瓦片
     this.$on("addtile", l => this._olMap.addLayer( l ));
     // 移除瓦片

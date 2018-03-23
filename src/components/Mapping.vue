@@ -20,7 +20,7 @@
   import LineLayer from './LineLayer.vue'
   import PointLayer from './PointLayer.vue'
   import PolygonLayer from './PolygonLayer.vue'
-  import { PolylineParam, PointParam } from '../core/mappingParams.js'
+  import { PolylineParam, PointParam, PolygonParam } from '../core/mappingParams.js'
   import observe from '../core/observer.js'
 
   const mappingParams = {
@@ -78,18 +78,30 @@
       var params = [];
 
       DATA.forEach( ( value, index ) => {
-        // 数据类型，（点线面）
-        const DATATYPE = value.type;
-        // 点线面对应的参数
-        const Param = mappingParams[ DATATYPE ];
-        var p = new Param();
 
-        // 参数可响应
-        observe( p );
-        // 数据源，数据源不需要observable，如果是用户上传的话，会是一个对象，就比较复杂
-        p.url = value.url;
-        p.container = params;
-        params.push( p );
+        // 如果是系统发布的服务数据
+        if( value.type === 'default' ) {
+          // 数据类型，（点线面）
+          const DATATYPE = value.geotype;
+          // 点线面对应的参数
+          const Param = mappingParams[ DATATYPE ];
+          var p = new Param();
+
+          // 参数可响应
+          observe( p );
+          // 数据源，数据源不需要observable，如果是用户上传的话，会是一个对象，就比较复杂
+          p.url = `${value.address}/0/query/?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=&geometryType=${value.geotype}&outFields=*&where=1=1`;
+          p.container = params;
+          // 数据名称
+          p.name = value.name;
+          params.push( p );
+        }
+
+        // 如果数据是用户上传的数据
+        else if( value.type === 'custom' ) {
+
+        }
+
 
       } )
 
