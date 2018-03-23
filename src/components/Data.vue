@@ -10,7 +10,7 @@
         <div class="titlist-cont">
           <p class="title">数据列表</p>
           <Card class="data-list-cont" :bordered="false" style="overflow-y:auto">
-              <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="item in datalist" >
+              <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="(item, index) in datalist" :key="index"  >
 
                 <Checkbox class="data-item" :label="item.name" size="large" >
                   <span class="dataname">{{item.name}}</span>
