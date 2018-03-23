@@ -1,20 +1,26 @@
 <template>
   <div class='layercardbox'>
     <Card>
-        <p slot="title">水利线性要素</p>
+        <p slot="title">{{param.name}}</p>
         <span :style="{ cursor: 'pointer', color: 'blue' }" slot="extra" @click.prevent="changeVisibility" >
             {{ visible }}
         </span>
-        <!-- <Switch v-model="switch1" @on-change="change"></Switch>    @click.prevent="changeLimit"-->
-        <Row>
-          颜色
-          <ColorPicker v-model="param.color" size="large" alpha />
-        </Row>
         <Row>
           线宽
-           <Slider v-model="param.width" show-input :max='10' :min='0' :step='0.5' show-tip='never'></Slider>
+           <Slider v-model="param.width" :max='10' :min='0' :step='0.5' show-tip='never'></Slider>
+            <!-- <Slider v-model="param.width" show-input :max='10' :min='0' :step='0.5' show-tip='never'></Slider> -->
         </Row>
         <Row>
+          <ButtonGroup shape="circle">
+              <Button type="primary" @click.prevent="toColorPage">
+                  <Icon type="chevron-left"></Icon>
+                  颜色
+              </Button>
+              <Button type="primary" @click.prevent="toStylePage">
+                  样式
+                  <Icon type="chevron-right"></Icon>
+              </Button>
+          </ButtonGroup>
         </Row>
     </Card>
   </div>
@@ -24,12 +30,30 @@
 
   export default {
     name: 'LinePanel',
-    props: ['param'],
+    props: ['param','topMenu'],
     components: {
     },
     methods: {
+      /**
+       * 更改图层可见性
+       * @return {[type]} [description]
+       */
       changeVisibility() {
         this.param.visible = !this.param.visible;
+      },
+      /**
+       * 跳转到颜色选择页
+       * @return {[type]} [description]
+       */
+      toColorPage() {
+        this.topMenu.toPage( 'color', this.param );
+      },
+      /**
+       * 跳转到样式选择页
+       * @return {[type]} [description]
+       */
+      toStylePage() {
+        this.topMenu.toPage( 'style', this.param );
       }
     },
     data () {
