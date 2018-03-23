@@ -2,7 +2,7 @@
   <div class="cont">
     <div class="cont2-title">
       <p class="title">制图模板</p>
-      <HR  width="100%" color= #e6e6e6 />
+      <HR  width="100%" color= #e6e6e6></HR>
 
     </div>
     <div class="cont2-template">
