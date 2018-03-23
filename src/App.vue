@@ -4,31 +4,38 @@
     <div class="layout">
       <layout :style="{height: '100vh'}">
           <Header>
-              <Menu ref="mapmenu" mode="horizontal"  active-name="activeName" theme="dark">
-              <!-- <Menu ref="mapmenu" mode="horizontal"  active-name="activeName" theme="primary"> -->
+              <Menu class="menu" ref="mapmenu" mode="horizontal"  active-name="activeName" theme="dark">
+                <div style="{display:flex;justify-content:center}">
+                  <MenuItem  class="menuitem" name="home">
+                      <router-link tag="span" to="/" >
+                        <Icon type="images" class="icon" size=18></Icon>
+                        <span class="menuname">模板</span>
+                      </router-link>
+                  </MenuItem>
+                <Icon type="chevron-right" color="#fff"></Icon>
+              </div>
+              <div style="{display:flex;justify-content:center}">
 
-                <MenuItem  name="home">
-                    <router-link tag="span" to="/">
-                      <Icon type="images" class="icon"></Icon>
-                      模板
-                    </router-link>
+                <MenuItem class="menuitem" name="data" >
+                  <div  @click="datatogo">
+                    <Icon type="stats-bars" class="icon" size=18 ></Icon>
+                    <span class="menuname">数据</span>
+                  </div>
                 </MenuItem>
-                <MenuItem name="data">
-                    <router-link tag="span" to="/data">
-                      <Icon type="stats-bars" class="icon"></Icon>
-                      数据
-                    </router-link>
-                </MenuItem>
-                <MenuItem name="map">
-                    <router-link tag="span" to="/map">
-                      <Icon type="map" class="icon"></Icon>
-                      地图
-                    </router-link>
+                <Icon type="chevron-right" color="#fff"></Icon>
+              </div>
+
+                <MenuItem  class="menuitem" name="map" >
+                  <div @click="maptogo">
+                    <Icon type="map" class="icon" size=18 ></Icon>
+                    <span class="menuname" >地图</span>
+                  </div>
                 </MenuItem>
               </Menu>
+
           </Header>
           <transition name="slide-fade">
-            <!-- <router-view name="template1"/> -->
+
             <router-view/>
           </transition>
 
@@ -44,16 +51,54 @@ export default {
   name: 'App',
   data () {
     return {
-        activeName: 'map'
+        activeName: 'home'
     }
   },
   created () {
     // 页面初始化时默认的active menuitem，根据路由决定
     this.activeName = this.$route.path.slice(1);
+
   },
   watch: {
     '$route' () {
+      //标题栏选中效果
+      // debugger
       this.$refs.mapmenu.currentActiveName = this.$route.path.slice(1) || 'home';
+    }
+  },
+  methods: {
+    datatogo () {
+      switch(this.$route.path.slice(1)) {
+        case '':
+        console.log(this.$refs.mapmenu.currentActiveName);
+        this.$refs.mapmenu.currentActiveName = 'home';
+        console.log(this.$refs.mapmenu.currentActiveName);
+        alert("请选择制图模板");
+        console.log(this.$refs.mapmenu.currentActiveName);
+
+
+        break;
+        case 'map':
+        this.$router.go(-1);
+        break;
+      }
+    },
+    maptogo () {
+      switch(this.$route.path.slice(1)) {
+        case '':
+        this.$refs.mapmenu.currentActiveName = 'home';
+        alert("请选择制图模板");
+        break;
+        case 'data':
+        if (this.__global__.mappingData.length > 0) {
+          this.$router.push({path: '/map'});
+        }else {
+          this.$refs.mapmenu.currentActiveName = 'home';
+
+          alert("请选择制图数据");
+        }
+        break;
+      }
     }
   }
 }
@@ -65,8 +110,8 @@ export default {
 }
 
   ul.ivu-menu > li > span {
-    display: inline-block;
-    height: inherit;
+    /* display: inline-block; */
+    /* height: inherit; */
   }
 
   #app{padding: 0px;}
@@ -91,23 +136,16 @@ export default {
   }
 
   .ivu-layout-header {
-    height: 70px;
-    /* padding:10px; */
+    /* height: 70px; */
+    /* padding:30px; */
     box-shadow: 0 1px 1px rgba(0,0,0,.08);
     z-index: 10000;
   }
 
   .icon {
     margin-right: 5px;
+
   }
-  /* .mapping-but {
-    height: 40px;
-    width: 150px;
-    margin: 10px;
-    font-size: 13px;
-    background-color: rgb(73, 80, 96);
-    border-color: rgb(73, 80, 96);
-  } */
   .ivu-steps {
     width: 30%;
   }
@@ -123,7 +161,22 @@ export default {
   }
 
   .layercardbox {
-    background:#fff;
-    margin-bottom: 10px
+    background: #fff;
+    margin-bottom: 10px;
+  }
+  .menuname {
+    font-size: 18px;
+  }
+  .menu {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    margin-top: 4px;
+  }
+  .menuitem {
+    display: flex;
+
+    flex-direction: row;
+
   }
 </style>

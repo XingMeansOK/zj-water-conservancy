@@ -25,7 +25,6 @@ export default {
       var filefmt = file.name.split(".").reverse()[0];
       var hz = "."+filefmt;
       var dataname = file.name.replace(hz, "");
-      // console.log(dataname);
       var fmtchkup = false;
       this.support.forEach((item) => {
         if (item === filefmt) {
@@ -48,18 +47,14 @@ export default {
             this.$emit("uploadata", {"name": dataname, "type": "custom", "data": json});
         });
       }else {
-        this.$Message.error({
-          // render: h => {
-          //   return {
-          //
-          //   }
-          // },
-          content: '数据格式错误，请重新选择！',
-          duration: 2,
-          top: 150
-        });
-        // alert("数据格式错误，请重新选择！");
-        // windows.alert()
+        alert("数据格式错误，请重新选择!");
+        // debugger
+        // this.$Message.error("数据格式错误");
+        //   {
+        //   content: '数据格式错误，请重新选择！',
+        //   // duration: 2,
+        //   // top: 150
+        // });
       }
     }
   }

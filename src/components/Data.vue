@@ -9,35 +9,31 @@
       <div class="cont2-data">
         <div class="titlist-cont">
           <p class="title">数据列表</p>
-          <Card class="data-list-cont" :bordered="false" style="overflow-y:scroll">
+          <Card class="data-list-cont" :bordered="false" style="overflow-y:auto">
+              <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="item in datalist" >
 
-            <!-- <Scroll height=400 > -->
-
-              <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="item in datalist" :key="item.id">
                 <Checkbox class="data-item" :label="item.name" size="large" >
                   <span class="dataname">{{item.name}}</span>
                   <span class="datatype" v-if="item.type==='default'">默认数据</span>
                   <span class="datatype" v-if="item.type==='custom'">上传数据</span>
-                  <Poptip class="datapic" content="提示内容" v-if="item.type==='default'">
+                  <Poptip class="datapic" content="提示内容qqqqqqqqqqqqqqqqqqqq" v-if="item.type==='default'">
                     <Icon id="info"  type="information-circled" @click.native.prevent="datainf"></Icon>
                   </Poptip>
                   <HR width="100%" color= #f2f2f2></HR>
                 </Checkbox>
               </CheckboxGroup>
-
-           <!-- </Scroll> -->
           </Card>
         </div>
       </div>
       <div class="cont3-butn">
         <div class="but-cont">
           <upload @uploadata="addata"/>
-          <router-link :to="{path:'map'}">
-            <Button id="t" class="mapping-but" shape="circle" type="primary">
+          <!-- <router-link :to="{path:'map'}"> -->
+            <Button id="t" class="mapping-but" shape="circle" type="primary" @click="tomapping">
               <Icon class="icon" type="paintbrush" size=20></Icon>
               去制图
             </Button>
-         </router-link>
+         <!-- </router-link> -->
          </div>
       </div>
       <div class="cont4-description">
@@ -70,35 +66,31 @@ export default {
       case '1':
         this.__global__.type = 'template1';
         this.templatename = '自然水系模板';
-        this.datalist = [
-          {"id":"5","type":"default","name":"河流","geotype":"esriGeometryPolygon","address":" http://114.215.249.116:6080/arcgis/rest/services/zjsl/heliu/MapServer"},
-          {"id":"6","type":"default","name":"湖泊","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/hupo/MapServer"}
-        ];
+        this.__global__.allData.forEach(item => {
+          if(item.template.indexOf("template1") != -1){
+            this.datalist.push(item);
+          }
+        });
+
         break;
       case '2':
         this.__global__.type = 'template2';
         this.templatename = '水利工程模板';
-        this.datalist = [
-          {"id":"0","type":"default","name":"水库","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiku/MapServer"},
-          {"id":"1","type":"default","name":"泵站","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/bengzhan/MapServer"},
-          {"id":"2","type":"default","name":"堤防工程","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
-          {"id":"3","type":"default","name":"灌区工程","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/guanqugongcheng/MapServer"},
-          {"id":"7","type":"default","name":"农村供水工程","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/nongcungongshuigongcheng/MapServer"},
-          {"id":"9","type":"default","name":"水电站","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuidianzhan/MapServer"},
-          {"id":"10","type":"default","name":"水文测站","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiwencezhan/MapServer"},
-          {"id":"11","type":"default","name":"水闸","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuizha/MapServer"},
-          {"id":"12","type":"default","name":"围垦","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
-          {"id":"13","type":"default","name":"引调水","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/yindiaoshui/MapServer"},
-        ];
+        this.__global__.allData.forEach(item => {
+          if(item.template.indexOf("template2") != -1){
+            this.datalist.push(item);
+          }
+        });
         break;
       case '3':
         this.__global__.type = 'template3';
         this.templatename = '防汛工程模板';
-        this.datalist = [
-          {"id":"2","type":"default","name":"堤防工程","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
-          {"id":"11","type":"default","name":"水闸","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuizha/MapServer"},
-          {"id":"12","type":"default","name":"围垦","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
-        ];
+        this.__global__.allData.forEach(item => {
+          if(item.template.indexOf("template3") != -1){
+            this.datalist.push(item);
+          }
+        });
+
         break;
      }
   },
@@ -110,13 +102,13 @@ export default {
         let diff = new Set([...now].filter(x => !last.has(x)));
         let addchk = Array.from(diff);
         this.__global__.mappingData.push(this.datalist[this.datalist.findIndex(item => item.name === addchk[0])]);
-        console.log(this.__global__.mappingData);
+        // console.log(this.__global__.mappingData);
       }
       else {
         let diff = new Set([...last].filter(x => !now.has(x)));
         let unchk = Array.from(diff);
         this.__global__.mappingData.splice(this.__global__.mappingData.findIndex(item => item.name === unchk[0]), 1);
-        console.log(this.__global__.mappingData);
+        // console.log(this.__global__.mappingData);
       }
       this.lastcheck = list;
     },
@@ -127,6 +119,13 @@ export default {
     datainf () {
       // alert("11111");
       // console.log("2222");
+    },
+    tomapping () {
+      if (this.__global__.mappingData.length > 0) {
+        this.$router.push({path: '/map'});
+      }else {
+        alert("请选择制图数据！");
+      }
     }
   }
 }
@@ -135,7 +134,7 @@ export default {
   .backgd {
     flex: 1;
     background-color: #fff;
-    overflow: scroll;
+    overflow: auto;
   }
   .cont_1 {
     display: flex;
