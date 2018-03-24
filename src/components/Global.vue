@@ -6,6 +6,8 @@
   export default
   {
     // 制图数据
+
+
     mappingData:[],
     // 制图类型
     type: null,
@@ -37,5 +39,8 @@
     geotype 用于保存当前数据是点线面中的哪一种
     type保存的是当前数据类型 default是服务数据， custom是用户上传数据
      */
+
+
+
   }
 </script>

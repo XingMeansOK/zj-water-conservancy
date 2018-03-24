@@ -11,6 +11,7 @@
           <p class="title">数据列表</p>
           <Card class="data-list-cont" :bordered="false" style="overflow-y:auto">
               <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="item in datalist" >
+
                 <Checkbox class="data-item" :label="item.name" size="large" >
                   <span class="dataname">{{item.name}}</span>
                   <span class="datatype" v-if="item.type==='default'">默认数据</span>
@@ -70,6 +71,7 @@ export default {
             this.datalist.push(item);
           }
         });
+
         break;
       case '2':
         this.__global__.type = 'template2';
@@ -88,6 +90,7 @@ export default {
             this.datalist.push(item);
           }
         });
+
         break;
      }
   },
