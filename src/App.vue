@@ -7,35 +7,33 @@
               <Menu class="menu" ref="mapmenu" mode="horizontal"  active-name="activeName" theme="dark">
                 <div style="{display:flex;justify-content:center}">
                   <MenuItem  class="menuitem" name="home">
-                      <router-link tag="span" to="/" >
+                      <!-- <router-link tag="span" to="/" > -->
+                      <div @click="togohome">
                         <Icon type="images" class="icon" size=18></Icon>
                         <span class="menuname">模板</span>
-                      </router-link>
+                      </div>
+                      <!-- </router-link> -->
                   </MenuItem>
                 <Icon type="chevron-right" color="#fff"></Icon>
               </div>
               <div style="{display:flex;justify-content:center}">
-
                 <MenuItem class="menuitem" name="data" >
-                  <div  @click="datatogo">
+                  <div  @click="togodata">
                     <Icon type="stats-bars" class="icon" size=18 ></Icon>
                     <span class="menuname">数据</span>
                   </div>
                 </MenuItem>
                 <Icon type="chevron-right" color="#fff"></Icon>
               </div>
-
                 <MenuItem  class="menuitem" name="map" >
-                  <div @click="maptogo">
+                  <div @click="togomap">
                     <Icon type="map" class="icon" size=18 ></Icon>
                     <span class="menuname" >地图</span>
                   </div>
                 </MenuItem>
               </Menu>
-
           </Header>
           <transition name="slide-fade">
-
             <router-view/>
           </transition>
 
@@ -62,28 +60,25 @@ export default {
   watch: {
     '$route' () {
       //标题栏选中效果
-      // debugger
       this.$refs.mapmenu.currentActiveName = this.$route.path.slice(1) || 'home';
     }
   },
   methods: {
-    datatogo () {
+    togodata () {
       switch(this.$route.path.slice(1)) {
         case '':
         console.log(this.$refs.mapmenu.currentActiveName);
         this.$refs.mapmenu.currentActiveName = 'home';
-        console.log(this.$refs.mapmenu.currentActiveName);
+        // console.log(this.$refs.mapmenu.currentActiveName);
         alert("请选择制图模板");
-        console.log(this.$refs.mapmenu.currentActiveName);
-
-
+        // console.log(this.$refs.mapmenu.currentActiveName);
         break;
         case 'map':
         this.$router.go(-1);
         break;
       }
     },
-    maptogo () {
+    togomap () {
       switch(this.$route.path.slice(1)) {
         case '':
         this.$refs.mapmenu.currentActiveName = 'home';
@@ -94,11 +89,13 @@ export default {
           this.$router.push({path: '/map'});
         }else {
           this.$refs.mapmenu.currentActiveName = 'home';
-
           alert("请选择制图数据");
         }
         break;
       }
+    },
+    togohome () {
+      this.__global__.mappingData = [];
     }
   }
 }

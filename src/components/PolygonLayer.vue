@@ -10,7 +10,7 @@
   const esrijsonFormat = new ol.format.EsriJSON();
 
   export default {
-    name: 'Pointlayer',
+    name: 'Polygonlayer',
     props: ['param'],
     data() {
       return {
@@ -23,6 +23,7 @@
        * 矢量图层
        */
 
+       // 保存制图参数和图层对象的引用，加载完地图数据之后调用
       var param = this.param;
 
        var vectorSource = new ol.source.Vector({
@@ -40,7 +41,6 @@
              if (features.length > 0) {
                vectorSource.addFeatures(features);
              }
-
              // 通知顶层数据已经添加到地图上了
              param.container.doneRequestParams++;
            }
@@ -48,14 +48,11 @@
        },
      });
 
+     var scope = this;
+
      // 初始的样式
      var initialStyle = new ol.style.Style({
-       image: new ol.style.Icon( this.param )
-       // image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-       //    color: '#8959A8',
-       //    crossOrigin: 'anonymous',
-       //    src: 'https://openlayers.org/en/v4.6.4/examples/data/dot.png'
-       //  }))
+       fill: new ol.style.Fill( this.param )
      });
 
      this._olLayer = new ol.layer.Vector({
@@ -64,9 +61,11 @@
      });
 
       // 图层对象都要定义一个update函数，用于实时更新制图参数
-      this._olLayer.update = function() {
+      this._olLayer.update = async function() {
+
+        // 更新填充样式
         this.setStyle( new ol.style.Style({
-          image: new ol.style.Icon( param )
+          fill: new ol.style.Fill( param )
         }) );
         // 图层是否可见
         param.visible? this.setVisible( true ) : this.setVisible( false );
@@ -79,8 +78,5 @@
       this.$nextTick(t => this.$parent.$emit("addtile", this._olLayer));
 
     },
-    mounted() {
-
-    }
   }
 </script>

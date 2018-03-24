@@ -1,7 +1,7 @@
 <template>
   <div class='layercardbox'>
     <Card>
-        <p slot="title">面状要素</p>
+        <p slot="title">{{param.name}}</p>
         <span :style="{ cursor: 'pointer', color: 'blue' }" slot="extra" @click.prevent="changeVisibility" >
             {{ visible }}
         </span>
@@ -18,15 +18,13 @@
             </ButtonGroup>
         </Row>
         <Row>
-           <Slider v-model="param.scale" :max='2' :min='0' :step='0.01' show-tip='never'></Slider>
-           <!-- <Slider v-model="param.scale" show-input :max='5' :min='0' :step='0.1' show-tip='never'></Slider> -->
-        </Row>
-        <Row>
-           <Slider v-model="param.opacity" :max='1' :min='0' :step='0.05' show-tip='never'></Slider>
-           <!-- <Slider v-model="param.opacity" show-input :max='1' :min='0' :step='0.05' show-tip='never'></Slider> -->
+          <Switch size="large">
+             <span slot="open">纹理</span>
+             <span slot="close">仅颜色</span>
+          </Switch>
         </Row>
         <!-- <Row>
-          <div :style="{backgroundColor: param.color, float: 'right', height: '1em', width: '2em'}" @click.prevent="toStylePage"></div>
+           <Slider v-model="param.opacity" :max='1' :min='0' :step='0.05' show-tip='never'></Slider>
         </Row> -->
     </Card>
   </div>

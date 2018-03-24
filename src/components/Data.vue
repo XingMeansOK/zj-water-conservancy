@@ -91,27 +91,47 @@ export default {
         break;
      }
   },
+  beforeMount () {
+      var _this = this;
+      this.__global__.mappingData.forEach(
+        item => {
+          _this.checkgp.push(item.name);
+        });
+        this.lastcheck = this.checkgp;
+  },
   methods: {
     checking (list){
-      let last = new Set(this.lastcheck);
-      let now = new Set(list);
-      if (this.lastcheck.length < list.length) {
-        let diff = new Set([...now].filter(x => !last.has(x)));
-        let addchk = Array.from(diff);
-        this.__global__.mappingData.push(this.datalist[this.datalist.findIndex(item => item.name === addchk[0])]);
-        // console.log(this.__global__.mappingData);
+      if (list.length > 3) {
+        alert("最多只能选三个哦~~");
+        list.pop();
+      }else {
+        let last = new Set(this.lastcheck);
+        let now = new Set(list);
+        //选中数据
+        if (this.lastcheck.length < list.length) {
+          //新选中的数据
+          let diff = new Set([...now].filter(x => !last.has(x)));
+          let addchk = Array.from(diff);
+          if(this.__global__.mappingData.findIndex(item => item.name === addchk[0]) === -1) {
+          this.__global__.mappingData.push(this.datalist[this.datalist.findIndex(item => item.name === addchk[0])]);
+          console.log(this.__global__.mappingData);
+          console.log(list);
+          }
+        }
+        //取消选中数据
+        else {
+          let diff = new Set([...last].filter(x => !now.has(x)));
+          let unchk = Array.from(diff);
+          this.__global__.mappingData.splice(this.__global__.mappingData.findIndex(item => item.name === unchk[0]), 1);
+          console.log(this.__global__.mappingData);
+          console.log(list);
+        }
+        this.lastcheck = list;
       }
-      else {
-        let diff = new Set([...last].filter(x => !now.has(x)));
-        let unchk = Array.from(diff);
-        this.__global__.mappingData.splice(this.__global__.mappingData.findIndex(item => item.name === unchk[0]), 1);
-        // console.log(this.__global__.mappingData);
-      }
-      this.lastcheck = list;
     },
     addata (data) {
       this.datalist.push(data);
-      console.log(this.datalist);
+      // console.log(this.datalist);
     },
     datainf () {
       // alert("11111");
@@ -131,7 +151,7 @@ export default {
   .backgd {
     flex: 1;
     background-color: #fff;
-    overflow: auto;
+    overflow: hidden;
   }
   .cont_1 {
     display: flex;

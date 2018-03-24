@@ -26,27 +26,50 @@
     ],
   }
 
+  const PolygonLayer = {
+    template1: [
+    ],
+    template2: [
+      { id: '3', name: '水阀' },
+      { id: '4', name: '水闸1' },
+    ],
+    template3: [
+
+    ],
+  }
+
+  const LineLayer = {
+    template1: [
+    ],
+    template2: [
+    ],
+    template3: [
+
+    ],
+  }
+
   const Layer = {
-    PointLayer
+    PointLayer,
+    PolygonLayer,
+    LineLayer,
   }
 
   export default {
     name: 'StylePick',
     props: ['param', 'topMenu'],
-    components: {
-    },
-    data() {
-      return {
-        items: null, // 当前制图模板+图层类型（点线面）条件下提供的符号类型
-        type: null,
+    computed: {
+      /*
+      提供给当前图层的符号样式
+       */
+      items: function() {
+        // 【当前图层的图层类型】【当前的制图模板】
+        return Layer[ this.param.layer ][ this.__global__.type ];
+      },
+      type: function() {
+        return this.__global__.type;
       }
     },
-    created() {
-      // 【当前图层的图层类型】【当前的制图模板】
-      this.items = Layer[ this.param.layer ][ this.__global__.type ];
-      // 当前的制图模板
-      this.type = this.__global__.type;
-    },
+
     methods: {
       /**
        * 点击确认，返回到图层页
@@ -59,12 +82,51 @@
        * 将选中的符号样式应用到图层参数上
        * @param {[type]} e [description]
        */
-      setStyle(e) {
-        e = e || event;
-        var reg = /(\.\/static).*(\.png)/;
-        var src = e.target.style.background.match( reg );
-        this.param.src = src[0];
-      }
+      setStyle: function() {
+
+        // 获取canvas二维绘图上下文
+        var cnv = document.createElement('canvas');
+        var ctx = cnv.getContext('2d');
+        var pattern, img;
+
+        /**
+         * 异步获取图片
+         * @param  {[type]} src [description]
+         * @return {[type]}     [description]
+         */
+        function getImage( src ) {
+          return new Promise( ( resolve, reject ) => {
+            var img = new Image();
+            img.src = src;
+            img.onload = function () {
+              resolve( this );
+            }
+          } )
+        }
+
+        return async function( e ) {
+          e = e || event;
+          var reg = /(\.\/static).*(\.png)/;
+          var src = e.target.style.background.match( reg );
+          // 面状要素设置纹理
+          if( this.param.layer === 'PolygonLayer' ) {
+
+            // 仅使用颜色填充
+            if( this.param.colorOnly ) {
+
+            } else { // 同时使用颜色和纹理
+              img = await getImage( src[0] );
+              pattern = ctx.createPattern(img, 'repeat');
+              this.param.color = pattern;
+            }
+
+          }
+          else {
+            this.param.src = src[0];
+          }
+
+        }
+      }()
     }
 
   }

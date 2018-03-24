@@ -1,10 +1,30 @@
 <template>
   <div class='layercardbox'>
     <Card>
-        <p slot="title">点状要素</p>
+        <p slot="title">{{param.name}}</p>
         <span :style="{ cursor: 'pointer', color: 'blue' }" slot="extra" @click.prevent="changeVisibility" >
             {{ visible }}
         </span>
+        <Row>
+          <div style="margin-top:10px;">
+            <div style="float:left">
+              <span>大小</span>
+            </div>
+            <div style="float:right">
+              <i-switch size="large" v-model="manual">
+                 <span slot="open">手动</span>
+                 <span slot="close">自动</span>
+               </i-switch>
+            </div>
+          </div>
+        </Row>
+        <Row>
+          <Slider v-model="param.scale" :max='scaleMax' :min='scaleMin' :step='0.01' show-tip='never' :disabled="!manual"></Slider>
+        </Row>
+        <Row>
+          透明度
+           <Slider v-model="param.opacity" :max='1.1' :min='0' :step='0.05' show-tip='never'></Slider>
+        </Row>
         <Row>
             <ButtonGroup shape="circle">
                 <Button type="primary" @click.prevent="toColorPage">
@@ -17,17 +37,6 @@
                 </Button>
             </ButtonGroup>
         </Row>
-        <Row>
-           <Slider v-model="param.scale" :max='2' :min='0' :step='0.01' show-tip='never'></Slider>
-           <!-- <Slider v-model="param.scale" show-input :max='5' :min='0' :step='0.1' show-tip='never'></Slider> -->
-        </Row>
-        <Row>
-           <Slider v-model="param.opacity" :max='1' :min='0' :step='0.05' show-tip='never'></Slider>
-           <!-- <Slider v-model="param.opacity" show-input :max='1' :min='0' :step='0.05' show-tip='never'></Slider> -->
-        </Row>
-        <!-- <Row>
-          <div :style="{backgroundColor: param.color, float: 'right', height: '1em', width: '2em'}" @click.prevent="toStylePage"></div>
-        </Row> -->
     </Card>
   </div>
 </template>
@@ -37,7 +46,37 @@
   export default {
     name: 'PointPanel',
     props: ['param', 'topMenu'],
-    components: {
+    data () {
+      return {
+        manual: false,
+        scaleMax: 2,
+        scaleMin: 0,
+      }
+    },
+    mounted() {
+      var scope = this;
+      // 确保ol地图对象已经保存
+      setTimeout( function() {
+
+        /**
+         * 监听地图分辨率变化的处理函数
+         * @return {[type]} [description]
+         */
+        function checkZoom () {
+          var zoom = map.getView().getZoom();
+          // 计算新的符号缩放大小
+          scope.param.scale = ( scope.scaleMax - scope.scaleMin ) * ( ( zoom - minZoom ) / ( maxZoom - minZoom ) )
+        }
+
+        var map = scope.__global__.olMap;
+        map.getView().on('change:resolution',checkZoom);
+        var maxZoom = map.getView().getMaxZoom();
+        var minZoom = map.getView().getMinZoom();
+      }, 0 )
+
+
+
+
     },
     methods: {
       /**
@@ -60,10 +99,6 @@
        */
       toStylePage() {
         this.topMenu.toPage( 'style', this.param );
-      }
-    },
-    data () {
-      return {
       }
     },
     computed: {
