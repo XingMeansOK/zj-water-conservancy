@@ -77,7 +77,7 @@
       const DATA = this.__global__.mappingData;
       // 制图参数，将传给子组件
       var params = [];
-debugger
+
       DATA.forEach( ( value, index ) => {
 
         // 如果是系统发布的服务数据

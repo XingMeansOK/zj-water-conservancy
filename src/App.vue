@@ -179,4 +179,7 @@ export default {
     flex-direction: row;
 
   }
+  .ivu-card-head {
+    cursor: move;
+  }
 </style>

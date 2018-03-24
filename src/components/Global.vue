@@ -7,10 +7,9 @@
   {
     // 制图数据
 
-
-    mappingData:[],
-    // 制图类型
-    type: null,
+    // mappingData:[],
+    // // 制图类型
+    // type: null,
     /*
     geotype 用于保存当前数据是点线面中的哪一种
     type保存的是当前数据类型 default是服务数据， custom是用户上传数据
@@ -33,14 +32,14 @@
       {"name":"引调水","geotype":"esriGeometryPolyline","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/yindiaoshui/MapServer"},
     ],
 
-    // mappingData:[
-    //     // {"id":"0","type":"default","name":"水库","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiku/MapServer"},
-    //     {"id":"12","type":"default","name":"围垦","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
-    //     {"id":"10","type":"default","name":"水文测站","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiwencezhan/MapServer"},
-    //     {"id":"2","type":"default","name":"堤防工程","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
-    // ],
-    // // 制图类型
-    // type: 'template2',
+    mappingData:[
+        // {"id":"0","type":"default","name":"水库","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiku/MapServer"},
+        {"id":"12","type":"default","name":"围垦","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
+        {"id":"10","type":"default","name":"水文测站","geotype":"esriGeometryPoint","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiwencezhan/MapServer"},
+        {"id":"2","type":"default","name":"堤防工程","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
+    ],
+    // 制图类型
+    type: 'template2',
 
 
   }
