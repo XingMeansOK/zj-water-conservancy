@@ -1,5 +1,5 @@
 <template>
-      <Sider width='350' hide-trigger :style="{position: 'fixed', height: '100vh', left: 0, background: '#fff', overflow: 'auto', zIndex: '9999'}">
+      <Sider width='350' hide-trigger :style="{position: 'fixed', top:'64px',bottom:0, left: 0, background: '#fff', overflow: 'hidden', zIndex: '9999'}">
         <Tabs size="small" v-model="activeLabel">
             <TabPane label="color" name='color'>
               <ColorPick v-if="activeParam" :param='activeParam' :topMenu='self'/>
@@ -121,6 +121,7 @@ export default {
 
   .ivu-tabs .ivu-tabs-tabpane{
     padding: 10px;
+    height: 100%;
   }
 
 

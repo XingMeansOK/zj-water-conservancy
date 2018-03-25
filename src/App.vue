@@ -136,8 +136,6 @@ export default {
   }
 
   .ivu-layout-header {
-    /* height: 70px; */
-    /* padding:30px; */
     box-shadow: 0 1px 1px rgba(0,0,0,.08);
     z-index: 10000;
   }
