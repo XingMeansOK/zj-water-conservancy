@@ -1,28 +1,99 @@
 <template>
   <div class="box open">
-    <template v-for="item in items">
-      <div class="stylechunk" >
-        <div class="styleimg" :style="{ background: `url(./static/${param.layer}/${type}/${item.id}.png) no-repeat center center`}" @click.prevent="setStyle"></div>
-        <span>{{item.name}}</span>
-      </div>
-    </template>
+    <div style="margin-bottom:-48px;overflow-y: auto;max-height:100%;padding-bottom:58px;padding-top:10px">
+      <template v-for="item in items">
+        <div class="stylechunk" >
+          <div class="styleimg" :style="{ background: `url(./static/${param.layer}/${type}/${item}.png) no-repeat center center`}" @click.prevent="setStyle" :title="item"></div>
+          <span class="style-name">{{item}}</span>
+        </div>
+      </template>
+    </div>
     <Button type="success" long @click.prevent='backToLayers' style="margin-top:20px">确认</Button>
   </div>
 </template>
 
 <script>
 
+
   const PointLayer = {
     template1: [
-
+      '成灾水位点',
+      '地表水水源地',
+      '河湖取水口',
+      '积水点',
+      '生活－水',
+      '生活用水',
+      '水1',
+      '水',
+      '水井',
+      '用水户',
     ],
     template2: [
-      { id: 'shuibeng', name: '水泵' },
-      { id: 'shuifa', name: '水阀' },
-      { id: 'shuizha1', name: '水闸1' },
+      '储水箱',
+      '地下水站',
+      '分水闸',
+      '公共供水企业',
+      '河道水位站',
+      '洪水预警',
+      '简易水位站',
+      '量水站',
+      '农村供水工程',
+      '取用水测站',
+      '水泵',
+      '水电',
+      '水电站',
+      '水管装置',
+      '水库点',
+      '水利行业单位',
+      '水利行政机关',
+      '水利企业',
+      '水利事业单位',
+      '水位站1',
+      '水位站',
+      '水文站1',
+      '水文站',
+      '水闸',
+      '水质监测站',
+      '污水处理厂',
+      '乡镇水利管理单位',
+      '消防水泵',
+      '消防水箱-水池',
+      '用水公司',
+      '中水厂',
+      '自来水厂',
+
+      // '水利企业',
+      // '水利事业单位',
+      // '水位站1',
+      // '水位站',
+      // '水文站1',
+      // '水文站',
+      // '水闸',
+      // '水质监测站',
+      // '污水处理厂',
+      // '乡镇水利管理单位',
+      // '消防水泵',
+      // '消防水箱-水池',
+      // '用水公司',
+      // '中水厂',
+      // '自来水厂',
     ],
     template3: [
-
+      '分水闸',
+      '河道水位站',
+      '洪水预警',
+      '简易水位站',
+      '量水站',
+      '水泵',
+      '水电站',
+      '水管装置',
+      '水库点',
+      '水位站1',
+      '水位站',
+      '水闸',
+      '消防水泵',
+      '消防水箱-水池',
+      '用水公司',
     ],
   }
 
@@ -135,20 +206,27 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .box{
-   width: 330px; background: #fff; margin-top: 2px; padding: 10px; padding-bottom: 5px;  opacity: 0; transition: all .3s ease;
+   width: 330px; background: #fff; padding: 0px 10px 10px; padding-bottom: 5px;  opacity: 0; transition: all .3s ease;
 }
-.box.open{ visibility: visible; opacity: 1; text-align: center;}
+.box.open{ visibility: visible; opacity: 1; text-align: center; height: 100%}
 
 .stylechunk{
   display: inline-block;
   width: 60px;
   height: 60px;
   box-sizing: border-box;
-  background: #495060;
+  background: #409fe0;
   margin: 3px;
   transition: all .3s ease;
   border-radius: 4px;
   padding: 2px;
+}
+.style-name {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  width: 55px;
+  display: inline-block;
 }
 .styleimg {
   width: 56px;

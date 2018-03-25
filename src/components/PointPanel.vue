@@ -63,6 +63,8 @@
          * @return {[type]} [description]
          */
         function checkZoom () {
+          // 如果是手动控制的话直接返回
+          if( scope.manual ) return
           var zoom = map.getView().getZoom();
           // 计算新的符号缩放大小
           scope.param.scale = ( scope.scaleMax - scope.scaleMin ) * ( ( zoom - minZoom ) / ( maxZoom - minZoom ) )
