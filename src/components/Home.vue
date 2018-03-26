@@ -56,7 +56,7 @@ export default {
     flex: 1;
     background-color: #fff;
     flex-direction: column;
-    overflow-y: hidden;
+    overflow: hidden;
   }
 
   .cont2-template {
