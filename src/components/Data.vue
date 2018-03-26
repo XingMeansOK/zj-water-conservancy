@@ -105,7 +105,7 @@ export default {
   methods: {
     checking (list){
       if (list.length > 3) {
-        alert("最多只能选三个哦~~");
+        alert("最多选三个数据！");
         list.pop();
       }else {
         let last = new Set(this.lastcheck);
