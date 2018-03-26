@@ -96,6 +96,8 @@ export default {
     },
     togohome () {
       this.__global__.mappingData = [];
+      this.$router.push({path: '/'});
+
     }
   }
 }

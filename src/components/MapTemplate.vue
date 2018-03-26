@@ -35,7 +35,7 @@
 <style>
   .template-card {
     width: 220px;
-    height: 200px;
+    height: 180px;
     text-align: center;
   }
   .template-name {
@@ -45,7 +45,8 @@
 
   }
   .template-pic {
-    width: 70%
+    width: 95%;
+    margin-top: 10px;
   }
   .template-icon {
     /* background-color: #000 */
