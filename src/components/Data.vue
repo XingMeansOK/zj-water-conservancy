@@ -54,7 +54,7 @@ export default {
   components: {upload},
   data () {
     return {
-      formatpic: '/static/description.png',
+      formatpic: '/static/pic/description.png',
       datalist: [],
       checkgp: [],
       lastcheck: [],
@@ -269,5 +269,10 @@ export default {
  }
  #info {
    z-index: 10;
+ }
+ @media only screen and (max-width : 500px) {
+   .cont4-description {
+     display: none;
+   }
  }
 </style>
