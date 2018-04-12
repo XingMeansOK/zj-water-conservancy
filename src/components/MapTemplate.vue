@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Card class="template-card">
-      <Icon class="template-icon" :type="name" :color="color" :size= "size" />
+    <Card class="template-card" :intrduce="intrduceInfo">
+      <!-- <Icon class="template-icon" :type="name" :color="color" :size= "size" /> -->
       <img class="template-pic" :src="pic" />
       <p class="template-name">{{label}}</p>
     </Card>
@@ -13,6 +13,9 @@
 
   export default {
     props: {
+      intrduceInfo: {
+        type: [String]
+      },
       pic: {
         type: [String]
       },
@@ -34,18 +37,25 @@
 </script>
 <style>
   .template-card {
-    width: 220px;
-    height: 180px;
+    /* width: 60%; */
+    height: 100%;
     text-align: center;
+    background-color: #4d6166;
+    /* margin-left: 10% */
+    border-radius: 20px;
+    /* position: absolute; */
+
+
   }
   .template-name {
-    font-size: 16px;
+    font-size: 22px;
     text-align: center;
-    color: rgb(35,53,77);
+    /* color: rgb(35,53,77); */
+    color: #e2e8e9
 
   }
   .template-pic {
-    width: 95%;
+    width: 100%;
     margin-top: 10px;
   }
   .template-icon {
