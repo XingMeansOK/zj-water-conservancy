@@ -3,7 +3,7 @@
     <div style="margin-bottom:-48px;overflow-y: auto;max-height:100%;padding-bottom:58px;padding-top:10px">
       <template v-for="item in items">
         <div class="stylechunk" >
-          <div class="styleimg" :style="{ background: `url(./static/${param.layer}/${type}/${item}.png) no-repeat center center`}" @click.prevent="setStyle" :title="item"></div>
+          <div class="styleimg" :style="{ background: `url(./static/${param.layer}/${type}/${item}.png) no-repeat center center`, 'background-size': 'cover'}" @click.prevent="setStyle" :title="item"></div>
           <span class="style-name">{{item}}</span>
         </div>
       </template>
@@ -110,11 +110,19 @@
 
   const LineLayer = {
     template1: [
+      "实线",
+      "虚线",
+      "圆点"
     ],
     template2: [
+      "实线",
+      "虚线",
+      "圆点"
     ],
     template3: [
-
+      "实线",
+      "虚线",
+      "圆点"
     ],
   }
 
@@ -178,16 +186,42 @@
           e = e || event;
           var reg = /(\.\/static).*(\.png)/;
           var src = e.target.style.background.match( reg );
+          // 设置图例图片样式
+          this.param.stylePic = src[0];
           // 面状要素设置纹理
           if( this.param.layer === 'PolygonLayer' ) {
 
-            // 仅使用颜色填充
-            if( this.param.colorOnly ) {
+            // // 仅使用颜色填充
+            // if( this.param.colorOnly ) {
+            //
+            // } else { // 同时使用颜色和纹理
+            //   img = await getImage( src[0] );
+            //   pattern = ctx.createPattern(img, 'repeat');
+            //   this.param.color = pattern;
+            // }
 
-            } else { // 同时使用颜色和纹理
-              img = await getImage( src[0] );
-              pattern = ctx.createPattern(img, 'repeat');
-              this.param.color = pattern;
+            img = await getImage( src[0] );
+            pattern = ctx.createPattern(img, 'repeat');
+            this.param.color = pattern;
+
+          }
+          else if( this.param.layer === "LineLayer" ) {
+            debugger
+            var s = src[0].match(/(.(?!\/))+(?=\.png)/g)[0].slice( 1 );
+            switch ( s ) {
+              case "实线":
+                this.param.lineDash = undefined;
+                this.param.custom = null;
+                break;
+              case "虚线":
+                this.param.lineDash = [50,25]; // 交替绘制线段和间距
+                this.param.custom = null;
+                break;
+              case "圆点":
+                this.param.custom = "dot";
+                break;
+              default:
+
             }
 
           }

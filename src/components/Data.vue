@@ -117,8 +117,8 @@ export default {
           let addchk = Array.from(diff);
           if(this.__global__.mappingData.findIndex(item => item.name === addchk[0]) === -1) {
           this.__global__.mappingData.push(this.datalist[this.datalist.findIndex(item => item.name === addchk[0])]);
-          console.log(this.__global__.mappingData);
-          console.log(list);
+          // console.log(this.__global__.mappingData);
+          // console.log(list);
           }
         }
         //取消选中数据
@@ -126,8 +126,8 @@ export default {
           let diff = new Set([...last].filter(x => !now.has(x)));
           let unchk = Array.from(diff);
           this.__global__.mappingData.splice(this.__global__.mappingData.findIndex(item => item.name === unchk[0]), 1);
-          console.log(this.__global__.mappingData);
-          console.log(list);
+          // console.log(this.__global__.mappingData);
+          // console.log(list);
         }
         this.lastcheck = list;
       }

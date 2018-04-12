@@ -17,7 +17,7 @@
      */
     allData: [
       {"name":"水库","geotype":"esriGeometryPolygon","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiku/MapServer"},
-      {"name":"泵站","geotype":"esriGeometryPoint","type":"default","template":["template2"],"address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/bengzhan/MapServer"},
+      {"name":"泵站","geotype":"esriGeometryPoint","type":"default","template":["template2","template3"],"address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/bengzhan/MapServer"},
       {"name":"堤防工程","geotype":"esriGeometryPolyline","type":"default","template":["template2","template3"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
       {"name":"灌区工程","geotype":"esriGeometryPolygon","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/guanqugongcheng/MapServer"},
       {"name":"海塘","geotype":"esriGeometryPolyline","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/haitang/MapServer"},
@@ -26,7 +26,7 @@
       {"name":"农村供水工程","geotype":"esriGeometryPoint","type":"default","template":["template2"],"address":"http://114.215.249.116:6079/arcgis/rest/services/zjsl/nongcungongshuigongcheng/MapServer"},
       {"name":"山塘","geotype":"esriGeometryPoint","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shantang/MapServer"},
       {"name":"水电站","geotype":"esriGeometryPoint","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuidianzhan/MapServer"},
-      {"name":"水文测站","geotype":"esriGeometryPoint","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiwencezhan/MapServer"},
+      {"name":"水文测站","geotype":"esriGeometryPoint","type":"default","template":["template2","template3"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiwencezhan/MapServer"},
       {"name":"水闸","geotype":"esriGeometryPolyline","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuizha/MapServer"},
       {"name":"围垦","geotype":"esriGeometryPolygon","type":"default","template":["template2","template3"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
       {"name":"引调水","geotype":"esriGeometryPolyline","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/yindiaoshui/MapServer"},

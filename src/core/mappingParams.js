@@ -64,28 +64,32 @@ function PolylineParam(type) {
    */
   this.checksum = undefined;
 
+  /**
+   * 标识自定义的线型
+   * @type {[type]}
+   */
+  this.custom = null;
+
+  /**
+   * 用于图例遍历样式
+   * @type {String}
+   */
+  this.stylePic = './static/LineLayer/template1/实线.png';
+
 };
 
 function PointParam( type ) {
 
   PublicProp.call( this, 'PointPanel', 'PointLayer' );
 
-  this.color = '#8959A8';
+  this.color = '#576C84';
   this.crossOrigin = 'anonymous';
   // this.src = 'https://openlayers.org/en/v4.6.4/examples/data/dot.png';
-  this.src = './static/2.png';
+  this.src = this.stylePic = './static/2.png';
   this.opacity = 1;
 
   this.scale = 0.1;
 
-  // Object.defineProperty( this, 'squareSize', {
-  //   set: function( newValue ) {
-  //     this.size = [ newValue, newValue ];
-  //   },
-  //   get: function() {
-  //     return this.size[0];
-  //   }
-  // } )
 
 }
 
@@ -95,6 +99,8 @@ function PolygonParam( type ) {
   this.color = '#FFFF00';
   // 仅仅使用颜色填充或者是同时使用颜色和纹理
   this.colorOnly = false;
+
+  this.stylePic = this.color;
 
 }
 
@@ -198,6 +204,8 @@ function PublicProp( panel, layer ) {
   this.layer = layer;
   // 对应的面板类型
   this.panel = panel;
+  // 保存样式图片的地址
+  this.stylePic = null;
 }
 
 

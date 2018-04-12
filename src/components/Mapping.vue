@@ -7,6 +7,7 @@
           <component v-bind:is='param.layer' :param = 'param'></component>
         </template>
       </MapContainer>
+      <MapLegend :params = 'params' />
   </layout>
 </template>
 
@@ -21,6 +22,7 @@
   import LineLayer from './LineLayer.vue'
   import PointLayer from './PointLayer.vue'
   import PolygonLayer from './PolygonLayer.vue'
+  import MapLegend from './Legend.vue'
   import { PolylineParam, PointParam, PolygonParam } from '../core/mappingParams.js'
   import observe from '../core/observer.js'
 
@@ -60,6 +62,7 @@
       LineLayer,
       PointLayer,
       PolygonLayer,
+      MapLegend,
     },
     data () {
       return {

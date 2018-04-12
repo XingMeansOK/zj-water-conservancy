@@ -94,6 +94,7 @@
       },
       updataValue (value) {
         this.param.color = value;
+        (this.param.layer === 'PolygonLayer') && (this.param.stylePic = value);
       },
       // 格式化 hex 颜色值
        parseColor (hexStr) {
