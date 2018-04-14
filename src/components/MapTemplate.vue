@@ -40,7 +40,8 @@
     /* width: 60%; */
     height: 100%;
     text-align: center;
-    background-color: #4d6166;
+    background-color: #c5cad3;
+    opacity: 1;
     /* margin-left: 10% */
     border-radius: 20px;
     /* position: absolute; */
@@ -51,7 +52,7 @@
     font-size: 22px;
     text-align: center;
     /* color: rgb(35,53,77); */
-    color: #e2e8e9
+    color: rgb(73, 80, 96);
 
   }
   .template-pic {

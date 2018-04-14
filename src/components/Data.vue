@@ -1,7 +1,7 @@
 <template>
 <div class="backgd">
-
-    <div class="cont1-title">
+  <editCard :isShow="isShow" @cancel="editClose" :selectedThead="selectedThead" :selectedTbody="selectedTbody" :selectedFields="selectedFields"/>
+    <div  class="cont1-title">
       <p class="template-title">{{templatename}}</p>
       <HR width="100%" color=#f2f2f2 margin-left=20px></HR>
     </div>
@@ -11,11 +11,14 @@
           <p class="title">数据列表</p>
           <Card class="data-list-cont" :bordered="false" style="overflow-y:auto">
               <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="(item, index) in datalist" :key="index"  >
-
                 <Checkbox class="data-item" :label="item.name" size="large" >
                   <span class="dataname">{{item.name}}</span>
                   <span class="datatype" v-if="item.type==='default'">默认数据</span>
                   <span class="datatype" v-if="item.type==='custom'">上传数据</span>
+                  <Icon class="delete" type="trash-a" v-if="item.type==='custom'"
+                  @click.native.prevent="deleteUpload(item.data,index)"></Icon>
+                  <Icon class="edit" v-if="item.type==='custom'" type="edit"
+                  @click.native.prevent="editShow(item.data)"></Icon>
                   <Poptip class="datapic" content="提示内容qqqqqqqqqqqqqqqqqqqq" v-if="item.type==='default'">
                     <Icon id="info"  type="information-circled" @click.native.prevent="datainf"></Icon>
                   </Poptip>
@@ -27,13 +30,11 @@
       </div>
       <div class="cont3-butn">
         <div class="but-cont">
-          <upload @uploadata="addata"/>
-          <!-- <router-link :to="{path:'map'}"> -->
+          <uploadCard @uploadata="addata"/>
             <Button id="t" class="mapping-but" shape="circle" type="primary" @click="tomapping">
               <Icon class="icon" type="paintbrush" size=20></Icon>
               去制图
             </Button>
-         <!-- </router-link> -->
          </div>
       </div>
       <div class="cont4-description">
@@ -49,16 +50,32 @@
 </div>
 </template>
 <script>
-import upload from './Upload';
+import uploadCard from './UploadCard';
+import editCard from './EditCard';
+
+// import upload from './Upload';
+
 export default {
-  components: {upload},
+  components: {uploadCard, editCard},
   data () {
     return {
       formatpic: '/static/pic/description.png',
+      //数据列表显示数据
       datalist: [],
+      //选中数据
       checkgp: [],
+      //上一步选中数据
       lastcheck: [],
-      templatename: ''
+      //默认模板名称
+      templatename: '',
+      //修改字段弹框显示控制
+      isShow: false,
+      //设置默认模板数
+      defaultNum: 3,
+      selectedThead: [],
+      selectedTbody: [],
+      selectedFields: {}
+
     }
   },
   created () {
@@ -103,6 +120,9 @@ export default {
         this.lastcheck = this.checkgp;
   },
   methods: {
+    // selectedThead () {
+    //   this.addata()
+    // },
     checking (list){
       if (list.length > 3) {
         alert("最多选三个数据！");
@@ -132,13 +152,16 @@ export default {
         this.lastcheck = list;
       }
     },
-    addata (data) {
-      this.datalist.push(data);
-      // console.log(this.datalist);
+    addata (val) {
+      this.datalist.push(val);
+      this.__global__.allData.push(val);
+      // this.selectedThead = val.data.thead;
+      // this.selectedTbody = val.data;
+      // this.selectedFields = val.data.fields;
     },
     datainf () {
+      //检测冒泡
       // alert("11111");
-      // console.log("2222");
     },
     tomapping () {
       if (this.__global__.mappingData.length > 0) {
@@ -146,6 +169,23 @@ export default {
       }else {
         alert("请选择制图数据！");
       }
+    },
+    editShow (data) {
+      // this.isShow = true;
+      this.isShow = !this.isShow;
+
+      this.selectedThead = data.thead;
+      this.selectedTbody = data;
+      this.selectedFields = data.fields;
+    },
+    editClose (val) {
+      this.isShow = !this.isShow;
+
+      // this.isShow = val;
+      // this.isShow = false;
+    },
+    deleteUpload (data,index) {
+      this.datalist.splice(index);
     }
   }
 }
@@ -237,6 +277,14 @@ export default {
     width: 20px;
     margin-left: 8px;
     float: right;
+  }
+  .edit, .delete {
+    float: right;
+    margin-left: 8px;
+
+  }
+  .edit:hover {
+    color: #336699;
   }
  .data-format {
    margin-right: 20px;
