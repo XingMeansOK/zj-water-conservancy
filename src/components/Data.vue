@@ -16,11 +16,11 @@
                   <span class="datatype" v-if="item.type==='default'">默认数据</span>
                   <span class="datatype" v-if="item.type==='custom'">上传数据</span>
                   <Icon class="delete" type="trash-a" v-if="item.type==='custom'"
-                  @click.native.prevent="deleteUpload(item.data,index)"></Icon>
+                  @click.native.prevent="deleteUpload(item.data,index)" size=20></Icon>
                   <Icon class="edit" v-if="item.type==='custom'" type="edit"
-                  @click.native.prevent="editShow(item.data)"></Icon>
+                  @click.native.prevent="editShow(item.data)" size=20></Icon>
                   <Poptip class="datapic" content="提示内容qqqqqqqqqqqqqqqqqqqq" v-if="item.type==='default'">
-                    <Icon id="info"  type="information-circled" @click.native.prevent="datainf"></Icon>
+                    <Icon id="info"  type="information-circled" @click.native.prevent="datainf" size=20></Icon>
                   </Poptip>
                   <HR width="100%" color= #f2f2f2></HR>
                 </Checkbox>
@@ -40,7 +40,7 @@
       <div class="cont4-description">
         <div class="data-format">
           <p  class="title">数据格式说明</p>
-          <p class="formatdcp"> 上传数据支持xlsx、csv格式，数据放置在Sheet1.</p>
+          <p class="formatdcp"> 上传数据支持xlsx、xls、csv格式，数据放置在Sheet1，第一行为属性字段。</p>
           <Card :bordered="false">
             <img class="formatpic" :src="formatpic">
           </Card>
@@ -283,9 +283,9 @@ export default {
     margin-left: 8px;
 
   }
-  .edit:hover {
+  /* .edit,.delete,.info:hover {
     color: #336699;
-  }
+  } */
  .data-format {
    margin-right: 20px;
    margin-left: 20px;

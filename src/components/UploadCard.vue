@@ -94,7 +94,7 @@
 export default {
   data () {
     return {
-        support: ["xlsx", "xlc", "xlm", "xls", "xlt", "xlw", "csv"],
+        support: ["xlsx", "xls",  "csv"],
         //带格式的文件名
         filename: '',
         //不带格式的文件名
