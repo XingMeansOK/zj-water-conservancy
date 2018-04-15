@@ -8,7 +8,7 @@
           <div class="cont-selectorSlice">
             <span>属性：</span>
             <Select class="selector" v-model="selectedFields.attr" @on-change="selectChange_attr">
-              <Option class="selectOption" v-for="field in selectedThead" :value="field"></Option>
+              <Option class="selectOption" v-for="field in selectedThead" :value="field" :key="index"></Option>
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_attr">请选择数据属性</span>
@@ -17,7 +17,7 @@
           <div class="cont-selectorSlice">
             <span>X坐标：</span>
             <Select class="selector" v-model="selectedFields.x" @on-change="selectChange_x">
-              <Option class="selectOption" v-for="field in selectedThead" :value="field"></Option>
+              <Option class="selectOption" v-for="field in selectedThead" :value="field" :key="index"></Option>
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_x">请选择数据X坐标</span>
@@ -26,7 +26,7 @@
           <div class="cont-selectorSlice">
             <span>Y坐标：</span>
             <Select class="selector" v-model="selectedFields.y" @on-change="selectChange_y">
-              <Option class="selectOption" v-for="field in selectedThead" :value="field"></Option>
+              <Option class="selectOption" v-for="field in selectedThead" :value="field" :key="index"></Option>
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_y">请选择数据Y坐标</span>
@@ -42,15 +42,15 @@
         <thead>
           <tr>
             <th> </th>
-            <th v-for="i in selectedThead">
+            <th v-for="i in selectedThead" :key="index">
               {{i}}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(i,index) in selectedTbody">
+          <tr v-for="(i,index) in selectedTbody" :key="index">
             <th scope="row">{{index}}</th>
-            <td v-for="j in selectedThead">{{i[j]}}</td>
+            <td v-for="j in selectedThead" :key="index">{{i[j]}}</td>
           </tr>
         </tbody>
       </table>
