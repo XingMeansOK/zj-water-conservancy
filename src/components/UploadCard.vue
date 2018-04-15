@@ -33,7 +33,7 @@
           <div class="cont-selectorSlice">
             <span>属性：</span>
             <Select class="selector" v-model="selected_attr" @on-change="selectChange_attr">
-              <Option class="selectOption" v-for="field in thead" :value="field"></Option>
+              <Option class="selectOption" v-for="field in thead" :value="field" :key="index"></Option>
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_attr">请选择数据属性</span>
@@ -42,7 +42,7 @@
           <div class="cont-selectorSlice">
             <span>X坐标：</span>
             <Select class="selector" v-model="selected_x" @on-change="selectChange_x">
-              <Option class="selectOption" v-for="field in thead" :value="field"></Option>
+              <Option class="selectOption" v-for="field in thead" :key="index" :value="field"></Option>
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_x">请选择数据X坐标</span>
@@ -51,7 +51,7 @@
           <div class="cont-selectorSlice">
             <span>Y坐标：</span>
             <Select class="selector" v-model="selected_y" @on-change="selectChange_y">
-              <Option class="selectOption" v-for="field in thead" :value="field"></Option>
+              <Option class="selectOption" v-for="field in thead" :key="index" :value="field"></Option>
             </Select>
           </div>
 
@@ -72,15 +72,15 @@
         <thead>
           <tr>
             <th> </th>
-            <th v-for="i in thead">
+            <th v-for="i in thead" :key="index">
               {{i}}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(i,index) in tbody">
+          <tr v-for="(i,index) in tbody" :key="index">
             <th scope="row">{{index}}</th>
-            <td v-for="j in thead">{{i[j]}}</td>
+            <td v-for="j in thead" :key="index">{{i[j]}}</td>
           </tr>
         </tbody>
       </table>
