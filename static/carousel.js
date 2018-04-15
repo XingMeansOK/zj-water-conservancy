@@ -8,19 +8,24 @@
 		this.nextBtn = poster.find("div.poster-next-btn");
 		this.prevBtn = poster.find("div.poster-prev-btn");
 		this.posterItems = poster.find("li.poster-item");
-		// if( this.posterItems.size()%2 == 0 ){
-		// 	this.posterItemMain.append( this.posterItems.eq(0).clone() );
-		// 	this.posterItems = this.posterItemMain.children();
-		// };
+		this.information = poster.next();
+
+		this.info = this.information.find("p.info");
+		this.info.text($(this.posterItems).attr("info"));
+		this.title = this.information.find("p.title");
+		this.title.text($(this.posterItems).attr("label"));
+
+
+
 		this.posterFirstItem = this.posterItems.first();
 		this.posterLastItem = this.posterItems.last();
 		this.rotateFlag = true;
 		//默认配置参数
 		this.setting = {
 			"width" : 1000,			//幻灯片的宽度
-			"height" : 270,			//幻灯片的高度
+			"height" : 540,			//幻灯片的高度
 			"posterWidth" : 640,	//幻灯片第一帧的宽度
-			"posterHeight" : 270,	//幻灯片第一帧的高度
+			"posterHeight" : 540,	//幻灯片第一帧的高度
 			"scale" : 0.8,			//记录显示比例关系
 			"speed" : 500,
 			"delay" : 5000,
@@ -63,7 +68,7 @@
 						left = prev.css("left"),
 						top = prev.css("top"),
 						zIndex = prev.css("zIndex");
-            current = $("li.poster-item[css.width$=640]");
+
 
 					zIndexArr.push(zIndex);
 					self.animate({
@@ -76,11 +81,24 @@
 					},_this_.setting.speed,function(){
 						_this_.rotateFlag = true;
 					});
+          // var current = $("li.poster-item[style*='width:640px']");
+
 				});
+
+
+
 				//zIndex需要单独保存再设置，防止循环时候设置再取的时候值永远是最后一个的zindex
 				this.posterItems.each(function(i){
 					$(this).css("zIndex",zIndexArr[i]);
 				});
+        var currentPrev = $("li.poster-item[style*='640px']");
+        var current = currentPrev.next().get(0) ? currentPrev.next() : _this_.posterFirstItem;
+        $(_this_.info).text($(current).attr("info"));
+				$(_this_.title).text($(current).attr("label"));
+
+
+
+
 			}else if(dir === "right"){//右旋转
 				this.posterItems .each(function(){
 					var self = $(this),
@@ -108,7 +126,13 @@
 				this.posterItems.each(function(i){
 					$(this).css("zIndex",zIndexArr[i]);
 				});
+        var currentPrev = $("li.poster-item[style*='640px']");
+        var current = currentPrev.prev().get(0) ? currentPrev.prev() : _this_.posterLastItem;
+        $(_this_.info).text($(current.attr("info")).selector);
 			};
+      // var currentPrev = $("li.poster-item[style*='640px']");
+      // var current = currentPrev.next().get(0) ? currentPrev.next() : _this_.posterFirstItem;
+      // $(_this_.info).text($(current.attr("info")).selector);
 		},
 		//设置剩余的帧的位置关系
 		setPosterPos:function(){

@@ -1,7 +1,7 @@
 <template>
   <div class="cont">
     <div class="cont1-title">
-      <p class="title">制图模板</p>
+      <p class="homeTitle">制图模板</p>
       <HR  width="100%" color= #e6e6e6></HR>
     </div>
     <carousel/>
@@ -39,7 +39,7 @@ export default {
     padding: 10px
 
   } */
-  .title {
+  .homeTitle {
     font-size: 30px;
     padding: 2px;
     margin-left: 20px;

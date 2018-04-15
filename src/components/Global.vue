@@ -32,6 +32,7 @@
       {"name":"引调水","geotype":"esriGeometryPolyline","type":"default","template":["template2"],"address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/yindiaoshui/MapServer"},
     ],
 
+
     // mappingData:[
     //     // {"id":"0","type":"default","name":"水库","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/shuiku/MapServer"},
     //     {"id":"12","type":"default","name":"围垦","geotype":"esriGeometryPolygon","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/weiken/MapServer"},
