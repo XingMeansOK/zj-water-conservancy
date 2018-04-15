@@ -8,18 +8,15 @@
 		this.nextBtn = poster.find("div.poster-next-btn");
 		this.prevBtn = poster.find("div.poster-prev-btn");
 		this.posterItems = poster.find("li.poster-item");
-    this.info = poster.find("span.info");
-    this.info.text($(this.posterItems.attr("info")).selector);
-    this.info.css({
-      fontSize: 20,
-      float: 'right'
+		this.information = poster.next();
 
-    });
+		this.info = this.information.find("p.info");
+		this.info.text($(this.posterItems).attr("info"));
+		this.title = this.information.find("p.title");
+		this.title.text($(this.posterItems).attr("label"));
 
-		// if( this.posterItems.size()%2 == 0 ){
-		// 	this.posterItemMain.append( this.posterItems.eq(0).clone() );
-		// 	this.posterItems = this.posterItemMain.children();
-		// };
+
+
 		this.posterFirstItem = this.posterItems.first();
 		this.posterLastItem = this.posterItems.last();
 		this.rotateFlag = true;
@@ -96,7 +93,10 @@
 				});
         var currentPrev = $("li.poster-item[style*='640px']");
         var current = currentPrev.next().get(0) ? currentPrev.next() : _this_.posterFirstItem;
-        $(_this_.info).text($(current.attr("info")).selector);
+        $(_this_.info).text($(current).attr("info"));
+				$(_this_.title).text($(current).attr("label"));
+
+
 
 
 			}else if(dir === "right"){//右旋转
