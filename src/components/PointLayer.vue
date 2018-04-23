@@ -24,29 +24,39 @@
        */
 
       var param = this.param;
+debugger
+      if( typeof param.url === "string" ) {
+        var vectorSource = new ol.source.Vector({
+        loader: function(extent, resolution, projection) {
+          var url = param.url;
+          $.ajax({url: url, dataType: 'jsonp', success: function(response) {
+              if (response.error) {
+                alert(response.error.message + '\n' +
+                    response.error.details.join('\n'));
+              } else {
+                // dataProjection will be read from document
+                var features = esrijsonFormat.readFeatures(response, {
+                  featureProjection: projection
+                });
+                if (features.length > 0) {
+                  vectorSource.addFeatures(features);
+                }
 
-       var vectorSource = new ol.source.Vector({
-       loader: function(extent, resolution, projection) {
-         var url = param.url;
-         $.ajax({url: url, dataType: 'jsonp', success: function(response) {
-           if (response.error) {
-             alert(response.error.message + '\n' +
-                 response.error.details.join('\n'));
-           } else {
-             // dataProjection will be read from document
-             var features = esrijsonFormat.readFeatures(response, {
-               featureProjection: projection
-             });
-             if (features.length > 0) {
-               vectorSource.addFeatures(features);
-             }
+                // 通知顶层数据已经添加到地图上了
+                param.container.doneRequestParams++;
+              }
+            }});
+          },
+        });
+      } else if( typeof param.url === "object" ) {
+        var vectorSource = new ol.source.Vector({
+          features: (new ol.format.GeoJSON()).readFeatures(param.url)
+        });
+        // 通知顶层数据已经添加到地图上了
+        param.container.doneRequestParams++;
+      }
 
-             // 通知顶层数据已经添加到地图上了
-             param.container.doneRequestParams++;
-           }
-         }});
-       },
-     });
+
 
      // 初始的样式
      var initialStyle = new ol.style.Style({

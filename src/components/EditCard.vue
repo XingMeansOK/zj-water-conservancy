@@ -87,67 +87,16 @@ export default {
         errorTipsShow_x: false,
         errorTipsShow_y: false,
         //记录选择字段
-        selectedField: {},
+        // _selectedField: {
+        //   x: null,
+        //   y: null,
+        //   attr: null,
+        // },
         clickOKCount: 0
     }
   },
 
   watch:{
-    // 'selectedFields.attr':
-    //   function(val){
-    //   if(this.clickOKCount>0) {
-    //     if (!val){
-    //       this.errorTipsShow_attr = true;
-    //     }else {
-    //       this.errorTipsShow_attr = false;
-    //     }
-    //   }
-    // },
-
-  //   selectedFields: {
-  //     function(val){
-  //     if(this.clickOKCount>0) {
-  //       if (!val.attr){
-  //         this.errorTipsShow_attr = true;
-  //       }else {
-  //         this.errorTipsShow_attr = false;
-  //       }
-  //       if (!val.x){
-  //         this.errorTipsShow_x = true;
-  //       }else {
-  //         this.errorTipsShow_x = false;
-  //       }
-  //       if (!val.y){
-  //         this.errorTipsShow_y = true;
-  //       }else {
-  //         this.errorTipsShow_y = false;
-  //       }
-  //     }
-  //
-  //   },
-  //   deep: true
-  // },
-    // selectedFields.x: function(val){
-    //   if(this.clickOKCount>0) {
-    //     if (!val){
-    //       this.errorTipsShow_x = true;
-    //       console.log(this.errorTipsShow_x);
-    //     }else {
-    //       this.errorTipsShow_x = false;
-    //
-    //     }
-    //   }
-    // },
-    // selectedFields.y: function(val){
-    //   if(this.clickOKCount>0) {
-    //     if (!val){
-    //       this.errorTipsShow_y = true;
-    //     }else {
-    //       this.errorTipsShow_y = false;
-    //
-    //     }
-    //   }
-    // },
     isShow: function (val) {
       this.show = !this.show;
       // this.show = false;
@@ -192,10 +141,10 @@ export default {
     },
     //上传数据第二步清空
     clean () {
-      this.selectedFields.attr = '';
-      this.selectedFields.x = '';
-      this.selectedFields.y = '';
-      console.log(this.selectedFields);
+      // this.selectedField.attr = '';
+      // this.selectedField.x = '';
+      // this.selectedField.y = '';
+      this.$parent.$emit( 'clean' );
     },
     selectChange_attr (val) {
       this.selectedField.attr=val;

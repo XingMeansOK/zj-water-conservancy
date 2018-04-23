@@ -111,6 +111,7 @@
              });
              if (features.length > 0) {
                vectorSource.addFeatures(features);
+               debugger
              }
 
              // 通知顶层数据已经添加到地图上了
@@ -135,7 +136,6 @@
 
       // 图层对象都要定义一个update函数，用于实时更新制图参数
       this._olLayer.update = function() {
-        debugger
 
         // var map = scope.__global__.olMap || null;
         // var maxZoom = map && map.getView().getMaxZoom();
@@ -157,7 +157,8 @@
                    }),
                    new ol.style.Style({
                      image: new ol.style.Circle({
-                       radius: 10,
+                       radius: param.width * 1.25,
+                       // radius: param.width * 2,
                        fill: new ol.style.Fill({
                          color: param.color
                        })
@@ -169,8 +170,9 @@
                        var minZoom =  map && map.getView().getMinZoom();
                        var coordinates = feature.getGeometry().getCoordinates();
                        var a = [], p, first;
-                       // var delta = 0.00009725575650549532 * 4000 / map.getView().getZoom();
-                       var delta = 0.00009725575650549532 * 2;
+                       // 样式间隔
+                       var delta = param.interval;
+                       // var delta = 0.00009725575650549532 * Math.pow( ( 24 - map.getView().getZoom() ), 2 );
                        // 有可能是multiLineString
                        if( typeof coordinates[0][0] == 'object' ) {
                          coordinates.forEach( function( value ) {
@@ -195,6 +197,55 @@
                      }
                    }),
                  ]
+                break;
+              case 'cross':
+                return [
+                  new ol.style.Style({
+                    stroke: new ol.style.Stroke(param)
+                  }),
+                  new ol.style.Style({
+                    image: new ol.style.Circle({
+                      radius: param.width * 1.25,
+                      // radius: param.width * 2,
+                      fill: new ol.style.Fill({
+                        color: param.color
+                      })
+                    }),
+                    geometry: function(feature) {
+                      // 每次重绘都会调用（拖拽、缩放都包括）
+                      var map = scope.__global__.olMap || null;
+                      var maxZoom = map && map.getView().getMaxZoom();
+                      var minZoom =  map && map.getView().getMinZoom();
+                      var coordinates = feature.getGeometry().getCoordinates();
+                      var a = [], p, first;
+                      // 样式间隔
+                      var delta = param.interval;
+                      // var delta = 0.00009725575650549532 * Math.pow( ( 24 - map.getView().getZoom() ), 2 );
+                      // 有可能是multiLineString
+                      if( typeof coordinates[0][0] == 'object' ) {
+                        coordinates.forEach( function( value ) {
+                          // 如果是multiLineString的话，那么子元素都还是数组，孙子元素也是数组但是代表的是一个坐标
+                          // value代表一条线。包含线上所有的拐点和端点
+                          first = value[ 0 ];
+                          while( p = getNextBreak( first, delta, value ) ) {
+                            a.push( p );
+                            first = p;
+                          }
+                          // 获取当前的缩放等级
+                          // var zoom = map.getView().getZoom();
+                        } )
+                      } else {
+                        first = coordinates[ 0 ];
+                        while( p = getNextBreak( first, delta, coordinates ) ) {
+                          a.push( p );
+                          first = p;
+                        }
+                      }
+                      return new ol.geom.MultiPoint(a);
+                    }
+                  }),
+                ]
+
                 break;
               default:
 
@@ -225,8 +276,5 @@
       this.$nextTick(t => this.$parent.$emit("addtile", this._olLayer));
 
     },
-    mounted() {
-
-    }
   }
 </script>

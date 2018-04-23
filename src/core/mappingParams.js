@@ -70,6 +70,8 @@ function PolylineParam(type) {
    */
   this.custom = null;
 
+  this.interval = 1;
+
   /**
    * 用于图例遍历样式
    * @type {String}

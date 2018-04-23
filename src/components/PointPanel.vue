@@ -114,14 +114,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .ivu-card {
-    box-shadow: 0 1px 6px rgba(0,0,0,.2);
-    border-color: #eee;
-  }
-  .ivu-color-picker {
-    float: right;
-  }
-
   .colorpick{
     height: 5em;
     width: 5em;

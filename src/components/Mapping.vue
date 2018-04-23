@@ -69,6 +69,36 @@
         params: null,
       }
     },
+    methods: {
+      /**
+       * 根据excel读到的数组生成geojson对象
+       * @param  {[Array]} a      [excel读到的数组对象]
+       * @param  {[Object]} fields [保存了有效字段的对象]
+       * @return {[Object]}        [返回GeoJSON对象]
+       */
+       getGeoJSON: function( a, fields ) {
+        var geojson = {
+          "type": "FeatureCollection",
+          "features": null,
+         };
+
+        geojson.features = a.map( function( value, index ) {
+          var feature = {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [ value[ fields.x ], value[ fields.y ] ],
+            },
+            "properties": {
+
+            }
+          }
+          return feature;
+        } )
+
+        return geojson;
+      }
+    },
     created() {
       // 没有路由缓存，所以，每次路由改变都会重新构建一遍组件
       // 加载
@@ -82,29 +112,33 @@
       var params = [];
 
       DATA.forEach( ( value, index ) => {
+        // 数据类型，（点线面）
+        const DATATYPE = value.geotype;
+        // 点线面对应的参数
+        const Param = mappingParams[ DATATYPE ] || mappingParams[ "esriGeometryPoint" ];
+        var p = new Param();
+        // 参数可响应
+        observe( p );
 
         // 如果是系统发布的服务数据
         if( value.type === 'default' ) {
-          // 数据类型，（点线面）
-          const DATATYPE = value.geotype;
-          // 点线面对应的参数
-          const Param = mappingParams[ DATATYPE ];
-          var p = new Param();
 
-          // 参数可响应
-          observe( p );
           // 数据源，数据源不需要observable，如果是用户上传的话，会是一个对象，就比较复杂
           p.url = `${value.address}/0/query/?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=&geometryType=${value.geotype}&outFields=*&where=1=1`;
-          p.container = params;
-          // 数据名称
-          p.name = value.name;
-          params.push( p );
+
         }
 
         // 如果数据是用户上传的数据
         else if( value.type === 'custom' ) {
+          // 目前只支持点数据
+          p.url = this.getGeoJSON( value.data, value.data.fields )
 
         }
+
+        p.container = params;
+        // 数据名称
+        p.name = value.name;
+        params.push( p );
 
 
       } )

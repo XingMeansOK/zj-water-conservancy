@@ -5,6 +5,10 @@
       <div v-if="param.stylePic.indexOf( 'png' ) !== -1" class="styleicon" :style="{ background: `url( ${param.stylePic} ) no-repeat center center`,'background-size': 'cover' }"></div>
       <div v-else class="styleicon" :style="{ background: `${param.stylePic}`, borderRadius: '8px' }"></div>
       <span class="legendtext">{{param.name}}</span>
+      <i-switch v-model="param.visible" style="margin: auto 0">
+         <span type="android-done" slot="open"></span>
+         <span type="android-close" slot="close"></span>
+       </i-switch>
     </div>
   </div>
 </template>
@@ -40,6 +44,7 @@ export default {
     width: 100%;
     padding: 10px 15px;
     display: flex;
+    justify-content: space-between;
   }
   .styleicon {
     width: 40px;

@@ -206,7 +206,6 @@
 
           }
           else if( this.param.layer === "LineLayer" ) {
-            debugger
             var s = src[0].match(/(.(?!\/))+(?=\.png)/g)[0].slice( 1 );
             switch ( s ) {
               case "实线":
@@ -239,7 +238,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .box{
-   width: 330px; background: #fff; padding: 0px 10px 10px; padding-bottom: 5px;  opacity: 0; transition: all .3s ease;
+   width: 100%; background: #fff; padding: 0px 10px 10px; padding-bottom: 5px;  opacity: 0; transition: all .3s ease;
 }
 .box.open{ visibility: visible; opacity: 1; text-align: center; height: 100%}
 

@@ -74,7 +74,11 @@ export default {
       defaultNum: 3,
       selectedThead: [],
       selectedTbody: [],
-      selectedFields: {}
+      selectedFields: {
+        x: null,
+        y: null,
+        attr: null,
+      }
 
     }
   },
@@ -118,6 +122,14 @@ export default {
           _this.checkgp.push(item.name);
         });
         this.lastcheck = this.checkgp;
+  },
+  mounted() {
+    this.$on( 'clean', () => {
+      this.selectedFields.x = '';
+      this.selectedFields.y = '';
+      this.selectedFields.attr = '';
+      debugger
+    } )
   },
   methods: {
     // selectedThead () {
@@ -176,7 +188,12 @@ export default {
 
       this.selectedThead = data.thead;
       this.selectedTbody = data;
-      this.selectedFields = data.fields;
+      // this.selectedFields = data.fields;
+      for (var variable in data.fields) {
+        if (data.fields.hasOwnProperty(variable)) {
+          this.selectedFields[ variable ] = data.fields[ variable ];
+        }
+      }
     },
     editClose (val) {
       this.isShow = !this.isShow;

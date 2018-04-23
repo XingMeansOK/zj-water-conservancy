@@ -141,24 +141,16 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .ivu-card {
-    box-shadow: 0 1px 6px rgba(0,0,0,.2);
-    border-color: #eee;
-  }
-  .ivu-color-picker {
-    float: right;
-  }
-
   ul,li,ol{ list-style: none; margin: 0; padding: 0; }
   input{ display: none; }
   .colorBtn{ width: 25px; height: 25px; }
   .colorBtn.disabled{ cursor: no-drop; }
   .box{
-     width: 330px; background: #fff; margin-top: 2px; padding: 10px; padding-bottom: 5px;  opacity: 0; transition: all .3s ease;
+     width: 100%; background: #fff; margin-top: 2px; padding: 10px; padding-bottom: 5px;  opacity: 0; transition: all .3s ease;
   }
   .box h3{ margin: 0; font-size: 14px; font-weight: normal; margin-top: 10px; margin-bottom: 5px; line-height: 1; }
   .box.open{ visibility: visible; opacity: 1; text-align: center;}
-  .colorView{ width: 286px; height: 30px; transition: background-color .3s ease; margin: 0 auto;}
+  .colorView{ height: 30px; transition: background-color .3s ease; margin: 0 auto;}
   .hd .defaultColor{ width: 80px; float: right; text-align: center; border: 1px solid #ddd; cursor: pointer; }
   .tColor li{ width: 25px; height: 25px; display: inline-block; margin: 0 2px; transition: all .3s ease; }
   .tColor li:hover{ box-shadow: 0 0 5px rgba(0,0,0,.4); transform: scale(1.3); }

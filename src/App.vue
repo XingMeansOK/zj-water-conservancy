@@ -33,7 +33,7 @@
                 </MenuItem>
               </Menu>
           </Header>
-          <transition name="slide-fade">
+          <transition name="slide-fade" mode="out-in">
             <router-view/>
           </transition>
 
@@ -121,7 +121,7 @@ export default {
 
   /* 可以设置不同的进入和离开动画 */
   /* 设置持续时间和动画函数 */
-  /* .slide-fade-enter-active {
+  .slide-fade-enter-active {
     transition: all .8s ease;
   }
   .slide-fade-leave-active {
@@ -131,7 +131,7 @@ export default {
  {
     transform: translateX(10px);
     opacity: 0;
-  } */
+  }
 
   .ivu-layout-header {
     box-shadow: 0 1px 1px rgba(0,0,0,.08);
@@ -166,6 +166,14 @@ export default {
     background: #fff;
     margin-bottom: 10px;
   }
+  .scale-enter-active, .scale-leave-active {
+    transition: transform .5s;
+    /* transform-origin: top left; */
+  }
+  .scale-enter, .scale-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    transform: scale(0);
+  }
+
   .menuname {
     font-size: 18px;
   }
@@ -183,5 +191,12 @@ export default {
   }
   .ivu-card-head {
     cursor: move;
+  }
+  .ivu-card {
+    /* box-shadow: 0 1px 6px rgba(0,0,0,.2); */
+    background-color: #fff;
+    /* background-color: #e9e9e9; */
+    border-color: #e9e9e9;
+    /* border-color: #e9e9e9; */
   }
 </style>

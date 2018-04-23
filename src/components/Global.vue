@@ -39,7 +39,7 @@
     //     {"id":"2","type":"default","name":"堤防工程","geotype":"esriGeometryPolyline","address":"http://114.215.249.116:6080/arcgis/rest/services/zjsl/difanggongcheng/MapServer"},
     // ],
     // // 制图类型
-    // type: 'template3',
+    // type: 'template2',
 
 
   }
