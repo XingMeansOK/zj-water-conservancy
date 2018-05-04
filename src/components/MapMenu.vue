@@ -2,7 +2,7 @@
       <Sider hide-trigger :style="{ position: 'fixed', top:'64px',bottom:0, left: 0, background: '#fff', overflow: 'hidden', zIndex: '9999'}">
         <Tabs size="small" v-model="activeLabel">
             <TabPane label="color" name='color'>
-              <ColorPick v-if="activeParam" :param='activeParam' :topMenu='self'/>
+              <ColorPick v-if="activeParam" :param='activeParam' :topMenu='self' :options='options'/>
             </TabPane>
             <TabPane label="layers" name='layers'>
               <draggable v-model="reverseParams">
@@ -37,6 +37,7 @@ export default {
       activeLabel: 'layers',
       self: null,
       paramsLocal: null,
+      options: {},
     }
   },
   computed:{
@@ -93,11 +94,13 @@ export default {
      * 跳转到指定的标签页，并且标记发起跳转的制图参数
      * @param  {[type]} name         [description]
      * @param  {[type]} currentParam [description]
+     * @param  { Object } options 包含很多选项
      * @return {[type]}              [description]
      */
-    toPage( name, currentParam ) {
+    toPage( name, currentParam, options ) {
       this.activeLabel = name;
       this.activeParam = currentParam;
+      this.options = options;
     }
   }
 }

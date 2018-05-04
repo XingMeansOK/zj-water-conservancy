@@ -7,7 +7,7 @@
     </div>
     <div class="bd">
       <h3>主题颜色</h3>
-      <ul class="tColor">
+      <ul :class="{ 'banned': isColorBar, 'tColor': true }">
         <li
           v-for="color of tColor"
           v-bind:style="{ backgroundColor: color }"
@@ -18,7 +18,7 @@
       </ul>
       <ul class="bColor">
         <li v-for="item of colorPanel">
-          <ul>
+          <ul :class="{ 'colorbar': isColorBar }">
             <li
               v-for="color of item"
               v-bind:style="{ backgroundColor: color }"
@@ -30,7 +30,7 @@
         </li>
       </ul>
       <h3>标准颜色</h3>
-      <ul class="tColor">
+      <ul :class="{ 'banned': isColorBar, 'tColor': true }">
         <li
           v-for="color of bColor"
           v-bind:style="{ backgroundColor: color }"
@@ -48,7 +48,7 @@
 
   export default {
     name: 'ColorPick',
-    props: ['param', 'topMenu'],
+    props: ['param', 'topMenu', 'options'],
     data () {
       return {
         // 鼠标经过的颜色块
@@ -72,8 +72,6 @@
         bColor: ['#c21401', '#ff1e02', '#ffc12a', '#ffff3a', '#90cf5b', '#00af57', '#00afee', '#0071be', '#00215f', '#72349d'],
       }
     },
-    components: {
-    },
     computed: {
       // 颜色面板
       colorPanel () {
@@ -82,6 +80,11 @@
           colorArr.push(this.gradient(color[1], color[0], 5))
         }
         return colorArr
+      },
+      // 是否是选择色系
+      isColorBar () {
+        if( !this.options ) return false;
+        return this.options.hasOwnProperty('isColorBar') && this.options.isColorBar;
       }
     },
     methods: {
@@ -92,7 +95,35 @@
       backToLayers() {
         this.topMenu.toPage( 'layers', this.param );
       },
+      /**
+       * 更新颜色值
+       * @param  {[type]}  value      [description]
+       * @return {[type]}             [description]
+       */
       updataValue (value) {
+        var options = this.options;
+        // 如果是选择色系的话
+        if( options && options.isColorBar ) {
+          let key = 9;
+          // 找到点选颜色对应的色系的索引，保存到key中
+          this.colorPanel.find( function( colorArr, index ) {
+            if( colorArr.find( function( color ) {  return color === value } ) ) {
+              key = index;
+              return true
+            } else {
+              return false
+            }
+          } )
+          // 更新色系的其实颜色和终止颜色
+          this.param.startColor = this.colorConfig[ key ][ 1 ];
+          this.param.stopColor = this.colorConfig[ key ][ 0 ];
+          return;
+        };
+        // 如果是统计图表为指定字段修改颜色值
+        if( options && options.isChart ) {
+          options.update(value);
+          return;
+        }
         this.param.color = value;
         (this.param.layer === 'PolygonLayer') && (this.param.stylePic = value);
       },
@@ -160,4 +191,12 @@
   .bColor li li{ display: block; width: 25px; height: 25px; transition: all .3s ease; margin: 0; }
   .bColor li li:hover{ box-shadow: 0 0 5px rgba(0,0,0,.4); transform: scale(1.3); }
 
+</style>
+<style>
+  .colorbar:hover > li {
+    box-shadow: 0 0 5px rgba(0,0,0,.4); transform: scale(1.3);
+  }
+  .banned {
+    cursor: not-allowed;
+  }
 </style>

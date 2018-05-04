@@ -24,7 +24,20 @@
        */
 
       var param = this.param;
-debugger
+
+      /**
+       * 检查字符串是否是数字
+       * @param  {[type]} theObj [description]
+       * @return {[type]}        [description]
+       */
+      function checkNumber(theObj) {
+        var reg = /^[0-9]+.?[0-9]*$/;
+        if (reg.test(theObj)) {
+          return true;
+        }
+        return false;
+      }
+
       if( typeof param.url === "string" ) {
         var vectorSource = new ol.source.Vector({
         loader: function(extent, resolution, projection) {
@@ -40,6 +53,32 @@ debugger
                 });
                 if (features.length > 0) {
                   vectorSource.addFeatures(features);
+
+                  // 保存可以用于分级符号的字段
+                  param.fields = [];
+                  debugger
+                  for (var variable in features[0].values_) {
+                    // 如果字段的属性值是数字的话，就可以用来做分级符号
+                    if (features[0].values_.hasOwnProperty(variable) && checkNumber( features[0].values_[ variable ] ) ) {
+                      let max, min;
+                      max = min = features[0].values_[ variable ];
+                      features.forEach( function( feature, index ) {
+                        if( +feature.values_[ variable ] > max ) {
+                          max = +feature.values_[ variable ];
+                        }
+                        if( +feature.values_[ variable ] < min ) {
+                          min = +feature.values_[ variable ];
+                        }
+                      } )
+
+                      // 保存可以用来做分级设色的字段（值为数字）和该字段值的最大值和最小值
+                      param.fields.push( {
+                        field: variable,
+                        max: max,
+                        min: min,
+                      } );
+                    }
+                  }
                 }
 
                 // 通知顶层数据已经添加到地图上了

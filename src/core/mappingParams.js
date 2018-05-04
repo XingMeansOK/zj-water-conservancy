@@ -92,6 +92,18 @@ function PointParam( type ) {
 
   this.scale = 0.1;
 
+  // 是否是分级符号
+  this.isGrade = false;
+  // 是否是统计图表
+  this.isChart = false;
+
+  // 分级设色分级数
+  this.gradeCount = 3;
+  // 分级字段
+  this.gradeField = 'OBJECTID';
+  // 分段方法
+  this.gradeMethod = '等间距分段';
+
 
 }
 
@@ -99,8 +111,18 @@ function PolygonParam( type ) {
 
   PublicProp.call( this, 'PolygonPanel', 'PolygonLayer' );
   this.color = '#FFFF00';
-  // 仅仅使用颜色填充或者是同时使用颜色和纹理
-  this.colorOnly = false;
+  // 是否是分级设色
+  this.isGrade = false;
+  // 分级设色分级数
+  this.gradeCount = 3;
+  // 分级字段
+  this.gradeField = 'OBJECTID';
+  // 分段方法
+  this.gradeMethod = '等间距分段';
+  // 终止颜色
+  this.stopColor = '#99490f';
+  // 起始颜色
+  this.startColor = '#fee9da';
 
   this.stylePic = this.color;
 

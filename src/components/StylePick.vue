@@ -1,11 +1,21 @@
 <template>
   <div class="box open">
     <div style="margin-bottom:-48px;overflow-y: auto;max-height:100%;padding-bottom:58px;padding-top:10px">
-      <template v-for="item in items">
-        <div class="stylechunk" >
-          <div class="styleimg" :style="{ background: `url(./static/${param.layer}/${type}/${item}.png) no-repeat center center`, 'background-size': 'cover'}" @click.prevent="setStyle" :title="item"></div>
-          <span class="style-name">{{item}}</span>
-        </div>
+      <template v-if="param.isChart">
+        <template v-for="item in icons">
+          <div class="stylechunk" >
+            <div class="styleimg" :style="{ background: `url(./static/${param.layer}/charticon/${item}.png) no-repeat center center`, 'background-size': 'cover'}" @click.prevent="setStyle" :title="item"></div>
+            <span class="style-name">{{item}}</span>
+          </div>
+        </template>
+      </template>
+      <template v-else>
+        <template v-for="item in items">
+          <div class="stylechunk" >
+            <div class="styleimg" :style="{ background: `url(./static/${param.layer}/${type}/${item}.png) no-repeat center center`, 'background-size': 'cover'}" @click.prevent="setStyle" :title="item"></div>
+            <span class="style-name">{{item}}</span>
+          </div>
+        </template>
       </template>
     </div>
     <Button type="success" long @click.prevent='backToLayers' style="margin-top:20px">确认</Button>
@@ -132,9 +142,37 @@
     LineLayer,
   }
 
+  const ICONS = [
+    '010101',
+    '010102',
+    '010103',
+    '010104',
+    '010105',
+    '010106',
+    '010107',
+    '010109',
+    '010110',
+    '010111',
+    '010201',
+    '010202',
+    '010203',
+    '010204',
+    '020101',
+    '020102',
+    '020201',
+    '020202',
+    '020203',
+    'pie',
+  ]
+
   export default {
     name: 'StylePick',
     props: ['param', 'topMenu'],
+    data() {
+      return {
+        icons: ICONS,
+      }
+    },
     computed: {
       /*
       提供给当前图层的符号样式

@@ -41,14 +41,8 @@
         </Row>
         <Row>
           <ButtonGroup shape="circle">
-              <Button type="primary" @click.prevent="toColorPage">
-                  <Icon type="chevron-left"></Icon>
-                  颜色
-              </Button>
-              <Button type="primary" @click.prevent="toStylePage">
-                  样式
-                  <Icon type="chevron-right"></Icon>
-              </Button>
+              <Button type="ghost" @click="toColorPage"><Icon type="chevron-left"></Icon> 颜色</Button>
+              <Button type="ghost" @click.prevent="toStylePage">样式 <Icon type="chevron-right"></Icon></Button>
           </ButtonGroup>
         </Row>
     </Card>
