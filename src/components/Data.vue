@@ -202,6 +202,7 @@ export default {
       }
       this.datalist.push(updata);
       this.__global__.allData.push(updata);
+
     },
     datainf () {
       //检测冒泡

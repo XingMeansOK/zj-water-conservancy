@@ -18,7 +18,6 @@
             <Icon class="icon" type="floder" size=20 color="#000"></Icon>
             选择文件
           </span>
-          <!-- <input class="uploadip" ref="fileinput" type="file" @change="readfls($event)" hidden="hidden" /> -->
           <input class="uploadip" ref="fileinput" type="file" @change="readfls($event)" hidden="hidden" />
 
         </Button>
@@ -124,7 +123,6 @@ export default {
         allSelectedField: {},
         clickOKCount: 0,
         savefilename: ''
-        // inputVal: ''
     }
   },
   watch:{
@@ -313,6 +311,7 @@ export default {
       //document.querySelector( 'input.uploadip' ).files获取input文件，为不可写接口,返回FileList {0: File(5120), length: 1}
       //设置document.querySelector( 'input.uploadip' ).value=‘’，清空上一步选择的文件信息
       this.$refs.fileinput.value = '';
+
     },
     cancelEvent() {
       this.getInit();
@@ -321,8 +320,6 @@ export default {
     cancel () {
       this.show = false;
       this.getInit();
-      // this.readfls();
-
     }
   }
 }
