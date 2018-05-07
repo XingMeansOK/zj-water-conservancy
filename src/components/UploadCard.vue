@@ -48,6 +48,7 @@
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_x">请选择数据经度</span>
+          <span class="formatTips" v-show="formatTipsShow_x">经度应为数字</span>
         </div>
         <div class="cont-selectItem">
           <div class="cont-selectorSlice">
@@ -60,6 +61,8 @@
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_y">请选择数据纬度</span>
+          <span class="formatTips" v-show="formatTipsShow_y">纬度应为数字</span>
+
         </div>
       </div>
       <div class="cont-btn">
@@ -119,10 +122,14 @@ export default {
         errorTipsShow_attr: false,
         errorTipsShow_x: false,
         errorTipsShow_y: false,
+        //经纬度字段提示
+        formatTipsShow_x: false,
+        formatTipsShow_y: false,
         //记录选择字段
         allSelectedField: {},
         clickOKCount: 0,
-        savefilename: ''
+        savefilename: '',
+        checkField: []
     }
   },
   watch:{
@@ -136,7 +143,6 @@ export default {
         this.showStep1 = false;
         this.showStep2 = true;
         break;
-
       }
     },
     selected_attr: function(val){
@@ -144,10 +150,8 @@ export default {
         if (!val){
           this.errorTipsShow_attr = true;
           console.log(this.errorTipsShow_attr);
-
         }else {
           this.errorTipsShow_attr = false;
-
         }
       }
     },
@@ -158,8 +162,12 @@ export default {
           console.log(this.errorTipsShow_x);
         }else {
           this.errorTipsShow_x = false;
-
         }
+        if (!this.checkXY(this.tbody,this.selected_x)) {
+         this.formatTipsShow_x = true;
+       }else {
+         this.formatTipsShow_x = false;
+       }
       }
     },
     selected_y: function(val){
@@ -169,6 +177,11 @@ export default {
         }else {
           this.errorTipsShow_y = false;
         }
+        if (!this.checkXY(this.tbody,this.selected_y)) {
+         this.formatTipsShow_y = true;
+       }else {
+         this.formatTipsShow_y = false;
+       }
       }
     },
   },
@@ -178,8 +191,8 @@ export default {
       this.$refs.fileinput.click();
     },
     readfls(ev) {
-      debugger
-      console.log(this.readfile);
+      // debugger
+      // console.log(this.readfile);
       var file = ev.target.files[0];
       //文件格式
       var filefmt = file.name.split(".").reverse()[0];
@@ -249,7 +262,13 @@ export default {
     },
     finish () {
       this.clickOKCount ++;
-      if (this.selected_x && this.selected_y && this.selected_attr) {
+      this.checkField.push(this.selected_x,this.selected_y,this.selected_attr);
+      var unqSelectField = [...new Set(this.checkField)];
+      // var unqSelectField = Array.from(new Set(this.allSelectedField));
+      if (this.selected_x && this.selected_y && this.selected_attr
+        && unqSelectField.length === this.checkField.length
+        && this.checkXY(this.tbody,this.selected_x)
+        && this.checkXY(this.tbody,this.selected_y)) {
         //设置上传数据选择字段属性
         this.tbody.fields = this.allSelectedField;
         //设置上传数据表头属性
@@ -259,14 +278,55 @@ export default {
         this.show = false;
         this.clickOKCount = 0;
       }
-      else if (!this.selected_x) {
-        this.errorTipsShow_x = true;
-        if (!this.selected_y) {
-          this.errorTipsShow_y = true;
-          if (!this.selected_attr) {
+      if (!this.checkXY(this.tbody,this.selected_x)) {
+        this.formatTipsShow_x = true;
+      }
+      if (!this.checkXY(this.tbody,this.selected_y)) {
+        this.formatTipsShow_y = true;
+      }
+      if (!this.selected_x) {
+            this.errorTipsShow_x = true;
+      }
+      if (!this.selected_y) {
+            this.errorTipsShow_y = true;
+      }
+      if (!this.selected_attr) {
             this.errorTipsShow_attr = true;
-          }
+      }
+      // else if (!this.checkXY(this.tbody,this.selected_x)){
+      //   this.formatTipsShow_x = true;
+      //   if (!this.checkXY(this.tbody,this.selected_y)){
+      //     this.formatTipsShow_y = true;
+      //     if (!this.selected_x) {
+      //       this.errorTipsShow_x = true;
+      //       if (!this.selected_y) {
+      //         this.errorTipsShow_y = true;
+      //         if (!this.selected_attr) {
+      //           this.errorTipsShow_attr = true;
+      //         }
+      //       }
+      //     }
+      //   }
+      //
+      // }
+      if (unqSelectField.length !== this.checkField.length && unqSelectField.indexOf("")===-1){
+        alert("不能选择重复字段!");
+      }
+      this.checkField = [];
+    },
+    //检查经纬度是否为数字
+    checkXY (tbody, field) {
+      var numpt = new RegExp(/^[0-9]+.?[0-9]*$/);
+      var checked = 0;
+      tbody.forEach((item) => {
+        if(!numpt.test(item[field]) && item[field]){
+          checked++;
         }
+      });
+      if(checked>0){
+        return false;
+      }else {
+        return true;
       }
     },
     //上传数据第二步清空
@@ -311,6 +371,10 @@ export default {
       //document.querySelector( 'input.uploadip' ).files获取input文件，为不可写接口,返回FileList {0: File(5120), length: 1}
       //设置document.querySelector( 'input.uploadip' ).value=‘’，清空上一步选择的文件信息
       this.$refs.fileinput.value = '';
+      this.checkField = [];
+      //经纬度字段提示
+      this.formatTipsShow_x= false;
+      this.formatTipsShow_y= false;
 
     },
     cancelEvent() {
@@ -333,6 +397,8 @@ export default {
   .previewCont {
     height: 100%;
     background-color: #d9d9d9;
+    margin-top: 5px;
+    /* border-radius: 10px; */
   }
   .step1 {
     display: flex;
@@ -343,8 +409,11 @@ export default {
     border-color: rgb(73, 80, 96);
     color: #f2f2f2;
     margin-left: 5px;
+    /* margin-bottom: 5px; */
   }
   .tPreview, th, td, tr{
+    /* border-radius: 10px; */
+
     border: 1px solid #f2f2f2;
     min-width: 100%;
     text-align: center;
@@ -389,7 +458,9 @@ export default {
      justify-content: flex-end;
    }
    .btn {
-     margin: 5px;
+     margin-left: 5px;
+     margin-right: 5px;
+     margin-top: 5px;
      background-color: rgb(73, 80, 96);
      border-color: rgb(73, 80, 96);
      color: #f2f2f2
@@ -406,7 +477,7 @@ export default {
      flex-direction: row;
      align-items: center;
    }
-   .errorTips {
+   .errorTips, .formatTips {
      color: red;
    }
    .open-but {

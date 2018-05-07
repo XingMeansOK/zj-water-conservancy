@@ -125,13 +125,13 @@ export default {
   mounted () {
     console.log("mounted");
     var _this = this;
-    this.$on("cleanSelect", (val)=> {
+    this.$on("cleanSelect", (val) => {
       // console.log(val);
       // this.selectedThead = uploadData
       // this.selectedThead = uploadData.data.thead;
       // this.selectedTbody = uploadData.data;
       var a = this.selectedFields;
-      debugger
+      // debugger
       _this.selectedFields = {};
       console.log("news");
       console.log(_this.selectedFields);
@@ -313,7 +313,9 @@ export default {
   .title {
     font-size: 21px;
     padding: 2px;
-    color: rgb(35,53,77);
+    color: #fff;
+
+    /* color: rgb(35,53,77); */
     font-weight: bold;
     /* background-color: #ffebcc; */
   }

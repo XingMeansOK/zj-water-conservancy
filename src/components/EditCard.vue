@@ -24,6 +24,8 @@
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_x">请选择数据经度</span>
+          <span class="formatTips" v-show="formatTipsShow_x">经度应为数字</span>
+
         </div>
         <div class="cont-selectItem">
           <div class="cont-selectorSlice">
@@ -36,6 +38,8 @@
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_y">请选择数据纬度</span>
+          <span class="formatTips" v-show="formatTipsShow_y">纬度应为数字</span>
+
         </div>
       </div>
       <div class="cont-btn">
@@ -94,7 +98,12 @@ export default {
         errorTipsShow_y: false,
         //记录选择字段
         allSelectedField: {},
-        clickOKCount: 0
+        clickOKCount: 0,
+        checkField: [],
+
+        //
+        formatTipsShow_x: false,
+        formatTipsShow_y: false
     }
   },
 
@@ -109,24 +118,60 @@ export default {
     cancelEvent() {
       this.$emit("cancel", false);
       this.show = false;
+      this.getInit();
+
+    },
+    //检查经纬度是否为数字
+    checkXY (tbody, field) {
+      var numpt = new RegExp(/^[0-9]+.?[0-9]*$/);
+      var checked = 0;
+      tbody.forEach((item) => {
+        if(!numpt.test(item[field]) && item[field]){
+          checked++;
+        }
+      });
+      if(checked>0){
+        return false;
+      }else {
+        return true;
+      }
     },
     finish () {
+      this.checkField = [];
       this.clickOKCount ++;
-      if (this.selectedFields.x && this.selectedFields.y && this.selectedFields.attr) {
+
+      this.checkField.push(this.selectedFields.x,this.selectedFields.y,this.selectedFields.attr);
+
+      var unqSelectField = [...new Set(this.checkField)];
+      // var unqSelectField = Array.from(new Set(this.allSelectedField));
+      if (this.selectedFields.x && this.selectedFields.y && this.selectedFields.attr
+        && unqSelectField.length === this.checkField.length
+        && this.checkXY(this.tbody,this.selectedFields.x)
+        && this.checkXY(this.tbody,this.selectedFields.y)) {
         //向data传递json,用户上传数据保存在“data”中，
         this.$emit("changefield", {"name": this.dataname, "fields": this.allSelectedField});
         this.show = false;
         this.clickOKCount = 0;
       }
-      else if (!this.selectedFields.x) {
-        this.errorTipsShow_x = true;
-        if (!this.selectedFields.y) {
-          this.errorTipsShow_y = true;
-          if (!this.selectedFields.attr) {
-            this.errorTipsShow_attr = true;
-          }
-        }
+      if (!this.checkXY(this.tbody,this.selectedFields.x)) {
+        this.formatTipsShow_x = true;
       }
+      if (!this.checkXY(this.tbody,this.selectedFields.y)) {
+        this.formatTipsShow_y = true;
+      }
+      if (!this.selectedFields.x) {
+            this.errorTipsShow_x = true;
+      }
+      if (!this.selectedFields.y) {
+            this.errorTipsShow_y = true;
+      }
+      if (!this.selectedFields.attr) {
+            this.errorTipsShow_attr = true;
+      }
+      if (unqSelectField.length !== this.checkField.length && unqSelectField.indexOf("")===-1){
+        alert("不能选择重复字段!");
+      }
+      this.checkField = [];
 
 
 
@@ -188,9 +233,9 @@ export default {
       //记录选择字段
       this.allSelectedField= {};
       this.clickOKCount= 0;
+      this.checkField = [];
     },
   }
-
 }
 </script>
 
@@ -202,6 +247,8 @@ export default {
   .previewCont {
     height: 100%;
     background-color: #d9d9d9;
+    margin-top: 5px;
+
   }
   .step1 {
     display: flex;
@@ -257,7 +304,9 @@ export default {
      justify-content: flex-end;
    }
    .btn {
-     margin: 5px;
+     margin-left: 5px;
+     margin-right: 5px;
+     margin-top: 5px;
      background-color: rgb(73, 80, 96);
      border-color: rgb(73, 80, 96);
      color: #f2f2f2
@@ -274,7 +323,7 @@ export default {
      flex-direction: row;
      align-items: center;
    }
-   .errorTips {
+   .errorTips,.formatTips {
      color: red;
    }
    .open-but {
