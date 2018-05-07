@@ -1,6 +1,10 @@
 <template>
 <div class="backgd">
-  <editCard :isShow="isShow" @cancel="editClose" :selectedThead="selectedThead" :selectedTbody="selectedTbody" :selectedFields="selectedFields"/>
+  <editCard :isShow="isShow" @cancel="editClose"
+  :selectedThead="selectedThead" :selectedTbody="selectedTbody" :selectedFields="selectedFields" :dataname="dataname"
+  @changefield="changefield"
+  @cleanSelect="cleanSelect"
+  />
     <div  class="cont1-title">
       <p class="template-title">{{templatename}}</p>
       <HR width="100%" color=#f2f2f2 margin-left=20px></HR>
@@ -18,7 +22,7 @@
                   <Icon class="delete" type="trash-a" v-if="item.type==='custom'"
                   @click.native.prevent="deleteUpload(item.data,index)" size=20></Icon>
                   <Icon class="edit" v-if="item.type==='custom'" type="edit"
-                  @click.native.prevent="editShow(item.data)" size=20></Icon>
+                  @click.native.prevent="editShow(item.data, item.name)" size=20></Icon>
                   <Poptip class="datapic" content="提示内容qqqqqqqqqqqqqqqqqqqq" v-if="item.type==='default'">
                     <Icon id="info"  type="information-circled" @click.native.prevent="datainf" size=20></Icon>
                   </Poptip>
@@ -52,9 +56,6 @@
 <script>
 import uploadCard from './UploadCard';
 import editCard from './EditCard';
-
-// import upload from './Upload';
-
 export default {
   components: {uploadCard, editCard},
   data () {
@@ -74,7 +75,9 @@ export default {
       defaultNum: 3,
       selectedThead: [],
       selectedTbody: [],
-      selectedFields: {}
+      selectedFields: {x: null, y: null, attr: null},
+      dataname: '',
+      namelist: []
 
     }
   },
@@ -86,6 +89,8 @@ export default {
         this.__global__.allData.forEach(item => {
           if(item.template.indexOf("template1") != -1){
             this.datalist.push(item);
+            // debugger
+            this.namelist.push({'name':item.name,'num':1});
           }
         });
 
@@ -96,6 +101,9 @@ export default {
         this.__global__.allData.forEach(item => {
           if(item.template.indexOf("template2") != -1){
             this.datalist.push(item);
+            this.namelist.push({'name':item.name, 'num':1});
+
+
           }
         });
         break;
@@ -105,11 +113,29 @@ export default {
         this.__global__.allData.forEach(item => {
           if(item.template.indexOf("template3") != -1){
             this.datalist.push(item);
+            this.namelist.push({'name':item.name, 'num':1});
+
+
           }
         });
 
         break;
      }
+  },
+  mounted () {
+    console.log("mounted");
+    var _this = this;
+    this.$on("cleanSelect", (val)=> {
+      // console.log(val);
+      // this.selectedThead = uploadData
+      // this.selectedThead = uploadData.data.thead;
+      // this.selectedTbody = uploadData.data;
+      var a = this.selectedFields;
+      debugger
+      _this.selectedFields = {};
+      console.log("news");
+      console.log(_this.selectedFields);
+    })
   },
   beforeMount () {
       var _this = this;
@@ -120,9 +146,17 @@ export default {
         this.lastcheck = this.checkgp;
   },
   methods: {
-    // selectedThead () {
-    //   this.addata()
-    // },
+    changefield (newData) {
+      //在datalist中查找修改的数据
+      var indexInDL = this.datalist.findIndex(item => item.name === newData.name);
+      this.datalist[indexInDL].data.fields = newData.fields;
+      //在mappingdata中查找修改的数据
+      var indexInMD = this.__global__.mappingData.findIndex(item => item.name === newData.name);
+      if(indexInMD !== -1) {
+        this.__global__.mappingData[indexInMD].data.fields = newData.fields;
+      }
+      // console.log(this.__global__.mappingData);
+    },
     checking (list){
       if (list.length > 3) {
         alert("最多选三个数据！");
@@ -137,8 +171,8 @@ export default {
           let addchk = Array.from(diff);
           if(this.__global__.mappingData.findIndex(item => item.name === addchk[0]) === -1) {
           this.__global__.mappingData.push(this.datalist[this.datalist.findIndex(item => item.name === addchk[0])]);
-          console.log(this.__global__.mappingData);
-          console.log(list);
+          // console.log(this.__global__.mappingData);
+          // console.log(list);
           }
         }
         //取消选中数据
@@ -146,18 +180,28 @@ export default {
           let diff = new Set([...last].filter(x => !now.has(x)));
           let unchk = Array.from(diff);
           this.__global__.mappingData.splice(this.__global__.mappingData.findIndex(item => item.name === unchk[0]), 1);
-          console.log(this.__global__.mappingData);
-          console.log(list);
+          // console.log(this.__global__.mappingData);
+          // console.log(list);
         }
         this.lastcheck = list;
       }
     },
     addata (val) {
-      this.datalist.push(val);
-      this.__global__.allData.push(val);
-      // this.selectedThead = val.data.thead;
-      // this.selectedTbody = val.data;
-      // this.selectedFields = val.data.fields;
+      var updata = val;
+      var nameIndex = this.namelist.findIndex(item => item.name === val.name);
+      if(nameIndex === -1){
+        this.namelist.push({'name':val.name,'num':1});
+
+      }
+      if(nameIndex>0) {
+        debugger
+        updata.name = updata.name+'('+this.namelist[nameIndex].num.toString()+')';
+        this.namelist[nameIndex].num++;
+
+
+      }
+      this.datalist.push(updata);
+      this.__global__.allData.push(updata);
     },
     datainf () {
       //检测冒泡
@@ -170,13 +214,14 @@ export default {
         alert("请选择制图数据！");
       }
     },
-    editShow (data) {
+    editShow (data, name) {
       // this.isShow = true;
       this.isShow = !this.isShow;
 
       this.selectedThead = data.thead;
       this.selectedTbody = data;
       this.selectedFields = data.fields;
+      this.dataname = name;
     },
     editClose (val) {
       this.isShow = !this.isShow;
@@ -186,6 +231,9 @@ export default {
     },
     deleteUpload (data,index) {
       this.datalist.splice(index);
+    },
+    cleanSelect () {
+      this.selectedFields = {};
     }
   }
 }

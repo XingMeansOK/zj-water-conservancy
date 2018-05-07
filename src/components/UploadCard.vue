@@ -15,17 +15,17 @@
       <div class="cont-upload">
         <Button id="t" class="open-but"  type="primary" @click="upload">
           <span>
-          <Icon class="icon" type="floder" size=20 color="#000"></Icon>
-          <!-- <i class="glyphicon glyphicon-folder-open"/> -->
-          选择文件
-        </span>
+            <Icon class="icon" type="floder" size=20 color="#000"></Icon>
+            选择文件
+          </span>
+          <!-- <input class="uploadip" ref="fileinput" type="file" @change="readfls($event)" hidden="hidden" /> -->
           <input class="uploadip" ref="fileinput" type="file" @change="readfls($event)" hidden="hidden" />
+
         </Button>
         <input class="showFilename" type="text"  readonly="readonly" v-model="filename">
-
       </div>
-      <!-- <upload @uploadata="addata" @getJSON="getJSON"/> -->
       <Button class="next" @click="nextStep" >下一步</Button>
+      <Button class="next" @click="cancel">取消</Button>
     </div>
     <div class="stepCont step2" v-show="showStep2">
       <div class="cont-selector">
@@ -33,46 +33,49 @@
           <div class="cont-selectorSlice">
             <span>属性：</span>
             <Select class="selector" v-model="selected_attr" @on-change="selectChange_attr">
-              <Option class="selectOption" v-for="field in thead" :value="field" :key="index"></Option>
+              <Option class="selectOption" v-for="(field,index) in thead" :value="field" :key="index"></Option>
             </Select>
           </div>
           <span class="errorTips" v-show="errorTipsShow_attr">请选择数据属性</span>
         </div>
         <div class="cont-selectItem" >
           <div class="cont-selectorSlice">
-            <span>X坐标：</span>
+            <div class="cont-tips">
+              <span>经度：</span>
+              <span>（X坐标）</span>
+            </div>
             <Select class="selector" v-model="selected_x" @on-change="selectChange_x">
-              <Option class="selectOption" v-for="field in thead" :key="index" :value="field"></Option>
+              <Option class="selectOption" v-for="(field,index) in thead" :value="field" :key="index"></Option>
             </Select>
           </div>
-          <span class="errorTips" v-show="errorTipsShow_x">请选择数据X坐标</span>
+          <span class="errorTips" v-show="errorTipsShow_x">请选择数据经度</span>
         </div>
         <div class="cont-selectItem">
           <div class="cont-selectorSlice">
-            <span>Y坐标：</span>
+            <div class="cont-tips">
+              <span>纬度：</span>
+              <span>（Y坐标）</span>
+            </div>
             <Select class="selector" v-model="selected_y" @on-change="selectChange_y">
-              <Option class="selectOption" v-for="field in thead" :key="index" :value="field"></Option>
+              <Option class="selectOption" v-for="(field,index) in thead" :key="index" :value="field"></Option>
             </Select>
           </div>
-
-          <span class="errorTips" v-show="errorTipsShow_y">请选择数据Y坐标</span>
-
-
+          <span class="errorTips" v-show="errorTipsShow_y">请选择数据纬度</span>
         </div>
       </div>
       <div class="cont-btn">
         <Button class="btn" @click="returnData">上一步</Button>
         <Button class="btn" @click="clean">清空</Button>
         <Button class="btn" @click="finish">确定</Button>
+        <Button class="btn" @click="cancel">取消</Button>
       </div>
-
     </div>
     <div class="previewCont" v-if="this.tbody.length>0">
       <table class="tPreview">
         <thead>
           <tr>
             <th> </th>
-            <th v-for="i in thead" :key="index">
+              <th v-for="(i,index) in thead" :key="index">
               {{i}}
             </th>
           </tr>
@@ -80,7 +83,7 @@
         <tbody>
           <tr v-for="(i,index) in tbody" :key="index">
             <th scope="row">{{index}}</th>
-            <td v-for="j in thead" :key="index">{{i[j]}}</td>
+            <td v-for="(j,index) in thead" :key="index">{{i[j]}}</td>
           </tr>
         </tbody>
       </table>
@@ -89,7 +92,6 @@
   </Modal>
 </div>
 </template>
-
 <script>
 export default {
   data () {
@@ -119,12 +121,14 @@ export default {
         errorTipsShow_x: false,
         errorTipsShow_y: false,
         //记录选择字段
-        selectedField: {},
-        clickOKCount: 0
+        allSelectedField: {},
+        clickOKCount: 0,
+        savefilename: ''
+        // inputVal: ''
     }
   },
   watch:{
-    current: function(cut){
+    current: function(cut) {
       switch(cut) {
         case 0 :
         this.showStep1 = true;
@@ -166,22 +170,25 @@ export default {
           this.errorTipsShow_y = true;
         }else {
           this.errorTipsShow_y = false;
-
         }
       }
     },
   },
-
   methods: {
     upload () {
+      // debugger
       this.$refs.fileinput.click();
     },
     readfls(ev) {
+      debugger
+      console.log(this.readfile);
       var file = ev.target.files[0];
       //文件格式
       var filefmt = file.name.split(".").reverse()[0];
       //文件名
       this.filename = file.name;
+      this.savefilename = file.name;
+
       var hz = "."+filefmt;
       var dataname = file.name.replace(hz, "");
       this.dataname = dataname;
@@ -221,7 +228,6 @@ export default {
         this.tbody = "";
         this.thead = "";
         alert("数据格式错误，请重新选择!");
-
       }
     },
     //是否显示上传数据弹窗,初始化
@@ -242,24 +248,18 @@ export default {
       this.current = this.current===0? 0 :this.current-1;
       this.clean();
       this.clickOKCount = 0;
-
     },
     finish () {
       this.clickOKCount ++;
       if (this.selected_x && this.selected_y && this.selected_attr) {
         //设置上传数据选择字段属性
-        this.tbody.fields = this.selectedField;
+        this.tbody.fields = this.allSelectedField;
         //设置上传数据表头属性
         this.tbody.thead = this.thead;
         //向data传递json,用户上传数据保存在“data”中，
         this.$emit("uploadata", {"name": this.dataname, "type": "custom", "data": this.tbody});
-        // this.__global__.uploadData.push({"name": this.dataname, "type": "custom", "data": this.tbody});
-        //data传递选择字段
-        // this.$emit("selectedField", this.selectedField);
-
         this.show = false;
         this.clickOKCount = 0;
-
       }
       else if (!this.selected_x) {
         this.errorTipsShow_x = true;
@@ -270,9 +270,6 @@ export default {
           }
         }
       }
-
-
-
     },
     //上传数据第二步清空
     clean () {
@@ -281,44 +278,53 @@ export default {
       this.selected_y = '';
     },
     selectChange_attr (val) {
-      this.selectedField.attr=val;
+      this.allSelectedField.attr=val;
     },
     selectChange_x (val) {
-      this.selectedField.x=val;
+      this.allSelectedField.x=val;
     },
     selectChange_y (val) {
-      this.selectedField.y=val;
+      this.allSelectedField.y = val;
     },
     getInit () {
-      this.filename= '',
+      this.filename = '';
       //不带格式的文件名
-      this.dataname= '',
+      this.dataname = '';
       //上传数据步骤
-      this.current= 0,
+      this.current = 0;
       //步骤控制显示
-      this.showStep1= true,
-      this.showStep2= false,
+      this.showStep1 = true;
+      this.showStep2 = false;
       //预览excel表头
-      this.thead= [],
+      this.thead = [];
       //预览excel内容
-      this.tbody= [],
+      this.tbody = [];
       //选择字段
-      this.selected_attr= '',
-      this.selected_x= '',
-      this.selected_y= '',
+      this.selected_attr = '';
+      this.selected_x = '';
+      this.selected_y = '';
       //选择字段提示
-      this.errorTipsShow_attr= false,
-      this.errorTipsShow_x= false,
-      this.errorTipsShow_y= false,
+      this.errorTipsShow_attr = false;
+      this.errorTipsShow_x = false;
+      this.errorTipsShow_y = false;
       //记录选择字段
-      this.selectedField= {},
-      this.clickOKCount= 0
+      this.allSelectedField = {};
+      this.clickOKCount = 0;
+      //document.querySelector( 'input.uploadip' ).files获取input文件，为不可写接口,返回FileList {0: File(5120), length: 1}
+      //设置document.querySelector( 'input.uploadip' ).value=‘’，清空上一步选择的文件信息
+      this.$refs.fileinput.value = '';
     },
     cancelEvent() {
       this.getInit();
+      // this.readfls();
     },
-  }
+    cancel () {
+      this.show = false;
+      this.getInit();
+      // this.readfls();
 
+    }
+  }
 }
 </script>
 
@@ -339,6 +345,7 @@ export default {
     background-color: rgb(73, 80, 96);
     border-color: rgb(73, 80, 96);
     color: #f2f2f2;
+    margin-left: 5px;
   }
   .tPreview, th, td, tr{
     border: 1px solid #f2f2f2;
@@ -419,5 +426,10 @@ export default {
    }
    .ivu-steps-head {
      color: rgb(73, 80, 96);
+   }
+   .cont-tips {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
    }
 </style>

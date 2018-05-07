@@ -128,7 +128,9 @@
 				});
         var currentPrev = $("li.poster-item[style*='640px']");
         var current = currentPrev.prev().get(0) ? currentPrev.prev() : _this_.posterLastItem;
-        $(_this_.info).text($(current.attr("info")).selector);
+        $(_this_.info).text($(current).attr("info"));
+				$(_this_.title).text($(current).attr("label"));
+
 			};
       // var currentPrev = $("li.poster-item[style*='640px']");
       // var current = currentPrev.next().get(0) ? currentPrev.next() : _this_.posterFirstItem;
