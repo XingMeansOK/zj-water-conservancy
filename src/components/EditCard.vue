@@ -146,17 +146,17 @@ export default {
       // var unqSelectField = Array.from(new Set(this.allSelectedField));
       if (this.selectedFields.x && this.selectedFields.y && this.selectedFields.attr
         && unqSelectField.length === this.checkField.length
-        && this.checkXY(this.tbody,this.selectedFields.x)
-        && this.checkXY(this.tbody,this.selectedFields.y)) {
+        && this.checkXY(this.selectedTbody,this.selectedFields.x)
+        && this.checkXY(this.selectedTbody,this.selectedFields.y)) {
         //向data传递json,用户上传数据保存在“data”中，
         this.$emit("changefield", {"name": this.dataname, "fields": this.allSelectedField});
         this.show = false;
         this.clickOKCount = 0;
       }
-      if (!this.checkXY(this.tbody,this.selectedFields.x)) {
+      if (!this.checkXY(this.selectedTbody,this.selectedFields.x)) {
         this.formatTipsShow_x = true;
       }
-      if (!this.checkXY(this.tbody,this.selectedFields.y)) {
+      if (!this.checkXY(this.selectedTbody,this.selectedFields.y)) {
         this.formatTipsShow_y = true;
       }
       if (!this.selectedFields.x) {
@@ -199,6 +199,11 @@ export default {
         }else {
           this.errorTipsShow_x = false;
         }
+        if (!this.checkXY(this.selectedTbody,this.selectedFields.x)) {
+         this.formatTipsShow_x = true;
+       }else {
+         this.formatTipsShow_x = false;
+       }
       }
     },
     selectChange_y (val) {
@@ -209,6 +214,11 @@ export default {
         }else {
           this.errorTipsShow_y = false;
         }
+        if (!this.checkXY(this.selectedTbody,this.selectedFields.y)) {
+         this.formatTipsShow_y = true;
+       }else {
+         this.formatTipsShow_y = false;
+       }
       }
     },
     cancel () {
