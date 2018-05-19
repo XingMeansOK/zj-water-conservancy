@@ -56,7 +56,6 @@
                vectorSource.addFeatures(features);
                // 保存可以用于分级设色的字段
                param.fields = [];
-               debugger
                for (var variable in features[0].values_) {
                  // 如果字段的属性值是数字的话，就可以用来做分级设色
                  if (features[0].values_.hasOwnProperty(variable) && checkNumber( features[0].values_[ variable ] ) ) {
@@ -206,7 +205,6 @@
                 new ol.style.Style({
                   fill: new ol.style.Fill( { color: colors[ i ] } ),
                   geometry: function(feature) {
-                    // debugger
                     // 每次重绘都会调用（拖拽、缩放都包括）
                     // feature代表单个矢量要素
                     // feature.values_能读取到要素的字段信息

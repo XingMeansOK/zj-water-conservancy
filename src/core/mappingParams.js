@@ -92,10 +92,36 @@ function PointParam( type ) {
 
   this.scale = 0.1;
 
-  // 是否是分级符号
+  // 是否是分级设色------------分级相关参数
   this.isGrade = false;
-  // 是否是统计图表
+  // 分级设色分级数
+  this.gradeCount = 3;
+  // 分级字段
+  this.gradeField = 'OBJECTID';
+  // 分段方法
+  this.gradeMethod = '等间距分段';
+  // 终止颜色
+  this.stopColor = '#99490f';
+  // 起始颜色
+  this.startColor = '#fee9da';
+
+
+  // 是否是统计图表-----------------统计相关参数
   this.isChart = false;
+  // 默认图表id
+  this.chartID = '010101';
+  // 统计图表的制图字段
+  this.statFields = [];
+  // 字段对应颜色的默认值
+  this.colors = [ '#ffc12a', '#ffff3a', '#90cf5b', '#00af57', '#00afee', '#0071be', '#00215f', '#72349d', '#ffc12a', '#ffff3a', '#90cf5b', '#00af57', '#00afee', '#0071be', '#00215f', '#72349d' ];
+
+  // 是否是聚类统计--------------聚类相关参数
+  this.isCluster = false;
+  // 集群间距
+  // 集群之间的最小距离（像素）。默认是20。
+  this.distance = 20;
+  // 聚类符号的背景颜色
+  this.clusterColor = '#3399CC';
 
   // 分级设色分级数
   this.gradeCount = 3;
@@ -128,91 +154,6 @@ function PolygonParam( type ) {
 
 }
 
-function PointParam0000( type ) {
-
-  PublicProp.call( this, 'PointPanel', 'PointLayer' );
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.anchor = [0.5, 0.5];
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.normalizedAnchor = null;
-
-  /**
-   * @private
-   * @type {ol.style.IconOrigin}
-   */
-  this.anchorOrigin = null;
-
-  /**
-   * @private
-   * @type {ol.style.IconAnchorUnits}
-   */
-  this.anchorXUnits = null;
-
-  /**
-   * @private
-   * @type {ol.style.IconAnchorUnits}
-   */
-  this.anchorYUnits = null;
-
-  /**
-   * @private
-   * @type {?string}
-   */
-  this.crossOrigin = 'anonymous';
-
-  this.src = 'https://openlayers.org/en/v4.6.4/examples/data/dot.png';
-
-  // ol.asserts.assert(!(src !== undefined && image),
-  //     4); // `image` and `src` cannot be provided at the same time
-  // ol.asserts.assert(!image || (image && imgSize),
-  //     5); // `imgSize` must be set when `image` is provided
-  //
-  // if ((src === undefined || src.length === 0) && image) {
-  //   src = image.src || ol.getUid(image).toString();
-  // }
-  // ol.asserts.assert(src !== undefined && src.length > 0,
-  //     6); // A defined and non-empty `src` or `image` must be provided
-
-  /**
-   * @private
-   * @type {ol.Color}
-   */
-  this.color = 'rgba(255, 169, 0, 1)';
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.offset = [0, 0];
-
-  /**
-   * @private
-   * @type {ol.style.IconOrigin}
-   */
-  this.offsetOrigin = ol.style.IconOrigin.TOP_LEFT;
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.origin = null;
-
-  /**
-   * @private
-   * @type {ol.Size}
-   */
-  this.size = 10;
-
-}
-
 /**
  * 公共的属性
  * @param       {[type]} panel [description]
@@ -235,7 +176,6 @@ function PublicProp( panel, layer ) {
 
 
 export {
-  TestMap,
   PolylineParam,
   PointParam,
   PolygonParam,

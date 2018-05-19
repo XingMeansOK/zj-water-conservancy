@@ -3,7 +3,7 @@
   <!-- 颜色色盘 -->
   <div class="box open">
     <div class="hd">
-      <div class="colorView" v-bind:style="`background-color: ${param.color}`"></div>
+      <div class="colorView" v-bind:style="`background-color: ${displayColor}`"></div>
     </div>
     <div class="bd">
       <h3>主题颜色</h3>
@@ -85,7 +85,17 @@
       isColorBar () {
         if( !this.options ) return false;
         return this.options.hasOwnProperty('isColorBar') && this.options.isColorBar;
+      },
+
+      /**
+       * 目前选中的颜色值，有一些情况不是展示param.color属性:
+       * 点符号聚类，展示的应该是param.clusterColor属性
+       * @return {[type]} [description]
+       */
+      displayColor() {
+        return this.param.clusterColor || this.param.color;
       }
+
     },
     methods: {
       /**
@@ -119,10 +129,10 @@
           this.param.stopColor = this.colorConfig[ key ][ 0 ];
           return;
         };
-        // 如果是统计图表为指定字段修改颜色值
-        if( options && options.isChart ) {
-          options.update(value);
-          return;
+        // 除了上面选色系这种情况，对于带options的，统一都执行update函数
+        if( options && ( typeof options.update === 'function' ) ) {
+          options.update( value );
+          return
         }
         this.param.color = value;
         (this.param.layer === 'PolygonLayer') && (this.param.stylePic = value);
@@ -183,13 +193,44 @@
   .box.open{ visibility: visible; opacity: 1; text-align: center;}
   .colorView{ height: 30px; transition: background-color .3s ease; margin: 0 auto;}
   .hd .defaultColor{ width: 80px; float: right; text-align: center; border: 1px solid #ddd; cursor: pointer; }
-  .tColor li{ width: 25px; height: 25px; display: inline-block; margin: 0 2px; transition: all .3s ease; }
+  .tColor li{ display: inline-block; margin: 0 2px; transition: all .3s ease; }
   .tColor li:hover{ box-shadow: 0 0 5px rgba(0,0,0,.4); transform: scale(1.3); }
   .bColor li{
-      width: 25px; display: inline-block; margin: 0 2px;
+      display: inline-block; margin: 0 2px;
     }
-  .bColor li li{ display: block; width: 25px; height: 25px; transition: all .3s ease; margin: 0; }
+  .bColor li li{ display: block; transition: all .3s ease; margin: 0; }
   .bColor li li:hover{ box-shadow: 0 0 5px rgba(0,0,0,.4); transform: scale(1.3); }
+
+  @media screen and (min-width: 2001px) {
+    .tColor li{ width: 25px; height: 25px;}
+    .bColor li{
+        width: 25px;
+      }
+    .bColor li li{ width: 25px; height: 25px;}
+  }
+  @media screen and (max-width: 2000px) {
+    .tColor li{ width: 25px; height: 25px;}
+    .bColor li{
+        width: 25px;
+      }
+    .bColor li li{ width: 25px; height: 25px;}
+  }
+
+  @media screen and (max-width: 1601px) {
+    .tColor li{ width: 20px; height: 20px;}
+    .bColor li{
+        width: 20px;
+      }
+    .bColor li li{ width: 20px; height: 20px;}
+  }
+
+  @media screen and (max-width: 1367px) {
+    .tColor li{ width: 17px; height: 17px;}
+    .bColor li{
+        width: 17px;
+      }
+    .bColor li li{ width: 17px; height: 17px;}
+  }
 
 </style>
 <style>

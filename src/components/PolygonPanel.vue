@@ -7,11 +7,11 @@
                 {{ visible }}
             </span>
             <Row>
-                <ButtonGroup shape="circle">
-                    <Button type="ghost" @click.prevent="toColorPage"><Icon type="chevron-left"></Icon> 颜色</Button>
-                    <Button type="ghost" @click="changeToGrade">分级设色</Button>
-                    <Button type="ghost" @click.prevent="toStylePage">样式 <Icon type="chevron-right"></Icon></Button>
-                </ButtonGroup>
+                <!-- <ButtonGroup shape="circle"> -->
+                    <Button type="ghost" size="small" @click.prevent="toColorPage"><Icon type="chevron-left"></Icon> 颜色</Button>
+                    <Button type="ghost" size="small" @click="changeToGrade">分级设色</Button>
+                    <Button type="ghost" size="small" @click.prevent="toStylePage">样式 <Icon type="chevron-right"></Icon></Button>
+                <!-- </ButtonGroup> -->
             </Row>
         </Card>
       </div>

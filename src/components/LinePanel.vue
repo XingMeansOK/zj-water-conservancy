@@ -40,10 +40,10 @@
           <Slider v-model="param.interval" :max='intervalMax' :min='intervalMin' :step='0.0001' show-tip='never' :disabled="!manual_interval"></Slider>
         </Row>
         <Row>
-          <ButtonGroup shape="circle">
-              <Button type="ghost" @click="toColorPage"><Icon type="chevron-left"></Icon> 颜色</Button>
-              <Button type="ghost" @click.prevent="toStylePage">样式 <Icon type="chevron-right"></Icon></Button>
-          </ButtonGroup>
+          <!-- <ButtonGroup shape="circle"> -->
+              <Button type="ghost" size="small" @click="toColorPage"><Icon type="chevron-left"></Icon> 颜色</Button>
+              <Button type="ghost" size="small" @click.prevent="toStylePage">样式 <Icon type="chevron-right"></Icon></Button>
+          <!-- </ButtonGroup> -->
         </Row>
     </Card>
   </div>

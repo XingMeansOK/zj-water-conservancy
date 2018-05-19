@@ -1,5 +1,5 @@
 <template>
-      <Sider hide-trigger :style="{ position: 'fixed', top:'64px',bottom:0, left: 0, background: '#fff', overflow: 'hidden', zIndex: '9999'}">
+      <Sider hide-trigger :class="{ hidden: isCollapsed }" :style="{ position: 'fixed', top:'64px',bottom:0, left: 0, background: '#fff', zIndex: '9999'}">
         <Tabs size="small" v-model="activeLabel">
             <TabPane label="color" name='color'>
               <ColorPick v-if="activeParam" :param='activeParam' :topMenu='self' :options='options'/>
@@ -12,9 +12,12 @@
               </draggable>
             </TabPane>
             <TabPane  label="style" name='style'>
-              <StylePick v-if="activeParam" :param='activeParam' :topMenu='self'/>
+              <StylePick v-if="activeParam" :param='activeParam' :topMenu='self' :options='options'/>
             </TabPane>
         </Tabs>
+        <div class="doorhandle" @click="changeSiderState">
+          <Icon :type="isCollapsed?'arrow-right-b':'arrow-left-b'" size="30" style="color:rgb(101, 128, 208)"></Icon>
+        </div>
       </Sider>
 </template>
 
@@ -38,6 +41,7 @@ export default {
       self: null,
       paramsLocal: null,
       options: {},
+      isCollapsed: false
     }
   },
   computed:{
@@ -101,6 +105,14 @@ export default {
       this.activeLabel = name;
       this.activeParam = currentParam;
       this.options = options;
+    },
+
+    /**
+     * 改变侧边栏状态
+     * @return {[type]} [description]
+     */
+    changeSiderState() {
+      this.isCollapsed = !this.isCollapsed;
     }
   }
 }
@@ -132,6 +144,26 @@ export default {
     padding: 10px;
     height: 100%;
     overflow-y: auto;
+  }
+
+  .doorhandle {
+    position: absolute;
+    top: 50%;
+    right: -32px;
+    width: 33px;
+    height: 83px;
+    background-color: #fff;
+    transform: translateY(-50%);
+    z-index: 2;
+    border-radius: 0 7px 7px 0;
+    border-right: 1px solid #dddee1;
+    display:flex;
+    align-items:center;
+    justify-content:center
+  }
+
+  .hidden {
+    transform: translateX( -100% );
   }
 
 

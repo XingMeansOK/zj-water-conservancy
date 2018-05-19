@@ -49,7 +49,7 @@ export default {
         zoom: 8,
         minZoom: 7,
         maxZoom: 20
-      })
+      }),
     });
 
     // 地图对象保存至全局

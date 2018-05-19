@@ -162,12 +162,11 @@
     '020201',
     '020202',
     '020203',
-    'pie',
   ]
 
   export default {
     name: 'StylePick',
-    props: ['param', 'topMenu'],
+    props: ['param', 'topMenu', 'options'],
     data() {
       return {
         icons: ICONS,
@@ -263,7 +262,11 @@
 
           }
           else {
-            this.param.src = src[0];
+            if( this.options && this.options.isChart ) {
+              this.options.update( src[0].match(/([0-9]*)(?=\.png)/)[0] );
+            } else {
+              this.param.src = src[0];
+            }
           }
 
         }
@@ -282,8 +285,6 @@
 
 .stylechunk{
   display: inline-block;
-  width: 60px;
-  height: 60px;
   box-sizing: border-box;
   background: #409fe0;
   margin: 3px;
@@ -295,7 +296,6 @@
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
-  width: 55px;
   display: inline-block;
 }
 .styleimg {
@@ -305,5 +305,67 @@
 .stylechunk:hover{
   transform: scale(1.3);
   box-shadow: 0 0 5px rgba(0,0,0,.4);
+}
+@media screen and (min-width: 2001px) {
+  .styleimg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .stylechunk{
+    width: 60px;
+    height: 60px;
+  }
+
+  .style-name {
+    width: 55px;
+  }
+}
+@media screen and (max-width: 2000px) {
+  .styleimg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .stylechunk{
+    width: 60px;
+    height: 60px;
+  }
+
+  .style-name {
+    width: 55px;
+  }
+}
+
+@media screen and (max-width: 1601px) {
+  .styleimg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .stylechunk{
+    width: 44px;
+    height: 44px;
+  }
+
+  .style-name {
+    width: 44px;
+  }
+}
+
+@media screen and (max-width: 1367px) {
+  .styleimg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .stylechunk{
+    width: 30px;
+    height: 30px;
+  }
+
+  .style-name {
+    width: 30px;
+  }
 }
 </style>

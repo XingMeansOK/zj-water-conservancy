@@ -43,6 +43,8 @@
     });
 
     const options = {
+        // 解决地图输出canvas污染问题
+        // crossOrigin: 'anonymous',
         name: "basemap",
         tileGrid: tileGridWMTS,
         matrixSet: 'default028mm',

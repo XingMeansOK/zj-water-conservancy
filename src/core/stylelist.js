@@ -6,9 +6,6 @@ var getNextBreak = function() {
    * @return {number}    两点间间距
    */
   function distanceBetween( p1, p2 ) {
-    // if( !p1 || !p2 ) {
-    //   debugger
-    // }
     return Math.sqrt(Math.pow(Math.abs( p1[0] - p2[0] ), 2) + Math.pow(Math.abs( p1[1] - p2[1] ), 2));
   }
   /**

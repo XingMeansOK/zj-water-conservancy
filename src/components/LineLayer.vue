@@ -17,9 +17,6 @@
      * @return {number}    两点间间距
      */
     function distanceBetween( p1, p2 ) {
-      // if( !p1 || !p2 ) {
-      //   debugger
-      // }
       return Math.sqrt(Math.pow(Math.abs( p1[0] - p2[0] ), 2) + Math.pow(Math.abs( p1[1] - p2[1] ), 2));
     }
     /**
@@ -111,7 +108,6 @@
              });
              if (features.length > 0) {
                vectorSource.addFeatures(features);
-               debugger
              }
 
              // 通知顶层数据已经添加到地图上了

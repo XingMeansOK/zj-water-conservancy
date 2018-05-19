@@ -7,7 +7,10 @@
           <component v-bind:is='param.layer' :param = 'param'></component>
         </template>
       </MapContainer>
-      <MapLegend :params = 'params' />
+      <!-- 和ol的canvas同属于一个层叠上下文，且层叠顺序相同，所以后来居上，保证Upfitter在ol的canvas上面 -->
+      <Upfitter :params = 'params' :editable='editable'/>
+      <Tool @switch='editMapElements' :editable='editable'/>
+      <!-- <MapLegend :params = 'params' /> -->
   </layout>
 </template>
 
@@ -18,11 +21,12 @@
   import MapMenu from './MapMenu.vue'
   import MapContainer from './MapContainer.vue'
   import TileLayer from './TileLayer.vue'
-  // import ChartLayer from './ChartLayer.vue'
   import LineLayer from './LineLayer.vue'
   import PointLayer from './PointLayer.vue'
   import PolygonLayer from './PolygonLayer.vue'
-  import MapLegend from './Legend.vue'
+  // import MapLegend from './Legend.vue'
+  import Tool from './Tool.vue'
+  import Upfitter from './Upfitter.vue'
   import { PolylineParam, PointParam, PolygonParam } from '../core/mappingParams.js'
   import observe from '../core/observer.js'
 
@@ -58,15 +62,17 @@
       MapMenu,
       MapContainer,
       TileLayer,
-      // ChartLayer,
+      Upfitter,
+      Tool,
       LineLayer,
       PointLayer,
       PolygonLayer,
-      MapLegend,
+      // MapLegend,
     },
     data () {
       return {
         params: null,
+        editable: false,
       }
     },
     methods: {
@@ -97,6 +103,13 @@
         } )
 
         return geojson;
+      },
+      /**
+       * 切换至编辑图面元素
+       * @return {[type]} [description]
+       */
+      editMapElements() {
+        this.editable  = !this.editable;
       }
     },
     created() {
@@ -139,7 +152,6 @@
         // 数据名称
         p.name = value.name;
         params.push( p );
-
 
       } )
 
