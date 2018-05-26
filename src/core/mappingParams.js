@@ -163,6 +163,9 @@ function PolygonParam( type ) {
 function PublicProp( panel, layer ) {
   // 是否可见
   this.visible = true;
+
+  // 是否显示注记信息
+  this.showLabels = false;
   // // 数据源
   // this.url = null;
   // 对应的图层类型

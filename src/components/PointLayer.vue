@@ -11,7 +11,7 @@
 
   export default {
     name: 'Pointlayer',
-    props: ['param'],
+    props: ['param', 'index'],
     data() {
       return {
         _olLayer: null, // 用来在内部保存layer的引用
@@ -28,6 +28,7 @@
       var global = this.__global__;
       // 要素的集合
       var featureArr = null;
+      var scope = this;
 
 
       /**
@@ -60,6 +61,7 @@
                   vectorSource.addFeatures(features);
                   // 保存要素集合的引用
                   featureArr = features;
+                  scope.$emit( 'feaureLoaded', scope.index, features );
 
                   // 保存可以用于分级符号的字段
                   param.fields = [];
@@ -314,8 +316,5 @@
       this.$nextTick(t => this.$parent.$emit("addtile", this._olLayer));
 
     },
-    mounted() {
-
-    }
   }
 </script>

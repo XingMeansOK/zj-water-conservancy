@@ -32,6 +32,7 @@ export default {
       params_cache: null,
       // 指北针的图片缓存
       compassImage: null,
+      active: false, // 当前canvas是否可以编辑
     }
   },
   methods: {
@@ -107,9 +108,19 @@ export default {
 
       // 逐像素处理颜色混合
       for (var i = 0, ii = data.length; i < ii; i += 4) {
-        data[i] *= r;
-        data[i + 1] *= g;
-        data[i + 2] *= b;
+        debugger
+        if( data[ i + 3 ] == 0 ) {
+          // 完全透明的地方处理为图例背景色
+          data[ i ] = 100;
+          data[ i + 1 ] = 100;
+          data[ i + 2 ] = 100;
+          data[ i + 3 ] = 123;
+        } else {
+          data[ i ] *= r;
+          data[ i + 1 ] *= g;
+          data[ i + 2 ] *= b;
+        }
+
       }
 
       return imageData;
@@ -126,7 +137,7 @@ export default {
       if( !ev ) {
         let a = this.LTWH.compass;
         // 擦除优化，如果是拖拽触发的重绘，因为之前已经清空了画布，这里就不需要擦除了
-        this.editable || this.ctxt.clearRect( ...a );
+        this.active || this.ctxt.clearRect( ...a );
         // 如果指北针的图片有缓存的话
         if( this.compassImage ) {
           this.ctxt.drawImage( this.compassImage, a[0], a[1] );
@@ -163,7 +174,7 @@ export default {
         // 判断样式是否和缓存一致，如果一致就不更新图例样式
         var needUpdate = !this.params.every( this.cacheUsable );
         // 擦除优化，如果是拖拽触发的重绘，因为之前已经清空了画布，这里就不需要擦除了
-        this.editable || this.ctxt.clearRect( ...this.LTWH.legend );
+        this.active || this.ctxt.clearRect( ...this.LTWH.legend );
 
 //        this.ctxt.fillStyle = "rgba(255, 255, 255, 1)";
 //        this.ctxt.fillRect ( ...this.LTWH.legend );
@@ -174,65 +185,95 @@ export default {
 
         const d = 5;
 
-        // 逐行绘制图例
-        this.params.forEach( function( param, index ){
-          // 如果样式需要更新
-          if( needUpdate ) {
-            // 如果样式是图片的话
-            if( /\.png/i.test( param.stylePic ) ) {
-              /*
-              图例的样式包括图片样式和颜色（要混合到一起）
-              参考ol.style.IconImage类的replaceColor方法
-               */
-              var imgObj = new Image();
-              imgObj.src = param.stylePic;
+        // 逐行绘制图例，list中保存绘制的任务及参数，为了在绘制图例背景之后再逐行绘制图例
+        // list的元素是promise，promise resolve之后返回的数组内容对应如下：
+        // 单行图例对应的参数索引，绘制函数名，绘制参数
+        let list = this.params.map( function( param, index ){
+          return new Promise( ( resolve, reject ) => {
+            // 如果样式需要更新
+            if( needUpdate ) {
+              // 如果样式是图片的话
+              if( /\.png/i.test( param.stylePic ) ) {
+                /*
+                图例的样式包括图片样式和颜色（要混合到一起）
+                参考ol.style.IconImage类的replaceColor方法
+                 */
+                var imgObj = new Image();
+                imgObj.src = param.stylePic;
 
-              //待图片加载完后，将其显示在canvas上
-              imgObj.onload = function(){
-                let x = a[0] + d; // 图片左上角位置
-                let y = a[1] + HEIGHT_legend * index + d;
-                let s =  HEIGHT_legend - d * 2; // 边长
-                ctxt.drawImage(this, x, y, s, s);//this即是imgObj,改变图片的大小：HEIGHT_legend - d * 2 方的
-                let imageData = scope.calcImage( x, y, s, s, param.color );
-//                ctxt.fillStyle = "rgba(255, 255, 255, 1)";
-//                ctxt.fillRect ( ...scope.LTWH.legend );
-                ctxt.putImageData( imageData, x, y );
-                // 保存图片对象的缓存
-                scope.params_cache[index][ 'image' ] = imageData;
+                //待图片加载完后，将其显示在canvas上
+                imgObj.onload = function(){
+                  let x = a[0] + d; // 图片左上角位置
+                  let y = a[1] + HEIGHT_legend * index + d;
+                  let s =  HEIGHT_legend - d * 2; // 边长
+                  ctxt.drawImage(this, x, y, s, s);//this即是imgObj,改变图片的大小：HEIGHT_legend - d * 2 方的
+                  let imageData = scope.calcImage( x, y, s, s, param.color );
+                  // 保存图片对象的缓存
+                  scope.params_cache[index][ 'image' ] = imageData;
+                  resolve( [ index, 'putImageData', imageData, x, y ] );
+                  // ctxt.putImageData( imageData, x, y );
+
+                }
               }
-            }
-            // 样式仅仅是颜色的话
-            else {
-              scope.params_cache[index][ 'image' ] = ctxt.fillStyle = param.stylePic;
-              ctxt.fillRect( a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2 );
-            }
-
-            // 更新缓存
-            for( var attr in scope.params_cache[index] ) {
-              if(attr === 'image') {
-                continue;
-              } else {
-                scope.params_cache[index][ attr ] = param[ attr ];
+              // 样式仅仅是颜色的话
+              else {
+                scope.params_cache[index][ 'image' ] = param.stylePic;
+                resolve( [ index, 'fillRect', param.stylePic, a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2 ] )
+                // ctxt.fillRect( a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2 );
               }
+
+              // 更新缓存
+              for( var attr in scope.params_cache[index] ) {
+                if(attr === 'image') {
+                  continue;
+                } else {
+                  scope.params_cache[index][ attr ] = param[ attr ];
+                }
+              }
+
+            } else {
+              // 如果样式是图片的话
+              if( /\.png/i.test( param.stylePic ) ) {
+                resolve( [ index, 'putImageData', scope.params_cache[index][ 'image' ], a[0] + d, a[1] + HEIGHT_legend * index + d ] )
+                // ctxt.putImageData( scope.params_cache[index][ 'image' ], a[0] + d, a[1] + HEIGHT_legend * index + d );
+              }
+              // 样式仅仅是颜色的话
+              else {
+                scope.params_cache[index][ 'image' ] = param.stylePic;
+                resolve( [ index, 'fillRect', param.stylePic, a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2] )
+                // ctxt.fillRect( a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2 );
+              }
+
             }
 
-          } else {
-            // 如果样式是图片的话
-            if( /\.png/i.test( param.stylePic ) ) {
-              ctxt.putImageData( scope.params_cache[index][ 'image' ], a[0] + d, a[1] + HEIGHT_legend * index + d );
-            }
-            // 样式仅仅是颜色的话
-            else {
-              scope.params_cache[index][ 'image' ] = ctxt.fillStyle = param.stylePic;
-              ctxt.fillRect( a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2 );
+            // // 绘制文字
+            // ctxt.font="bold 20px Arial";
+            // ctxt.fillStyle="#058";
+            // ctxt.fillText( param.name, a[0] + d * 2 + HEIGHT_legend, a[1] + HEIGHT_legend * index + d + HEIGHT_legend / 2 );
+          } )
+
+        } )
+
+        ctxt.font="bold 20px Arial";
+
+        // then中传入的参数是二维数组，包含了所有promise的resolve参数
+        Promise.all( list ).then( ( o ) => {
+          // 绘制背景
+          ctxt.fillStyle = "rgba(100, 100, 100, 0.5)";
+          ctxt.fillRect ( ...scope.LTWH.legend );
+          o.forEach( ( value ) => {
+            // 绘制图像
+            if( value[ 1 ] === 'fillRect' ) {
+              ctxt.fillStyle = value[ 2 ];
+              ctxt[ value[1] ]( ...value.slice(3) );
+            } else {
+              ctxt[ value[1] ]( ...value.slice(2) );
             }
 
-          }
-
-          // 绘制文字
-          ctxt.font="bold 20px Arial";
-          ctxt.fillStyle="#058";
-          ctxt.fillText( param.name, a[0] + d * 2 + HEIGHT_legend, a[1] + HEIGHT_legend * index + d + HEIGHT_legend / 2 );
+            // 绘制文字
+            ctxt.fillStyle="#fff";
+            ctxt.fillText( scope.params[ value[0] ].name, a[0] + d * 2 + HEIGHT_legend, a[1] + HEIGHT_legend * value[0] + d + HEIGHT_legend / 2 );
+          } )
         } )
 
         return
@@ -277,7 +318,7 @@ export default {
       if( !ev ) {
         let a = this.LTWH.scale;
         // 擦除优化，如果是拖拽触发的重绘，因为之前已经清空了画布，这里就不需要擦除了
-        this.editable || this.ctxt.clearRect( ...a );
+        this.active || this.ctxt.clearRect( ...a );
 
         // 获取当前的分辨率：map units per pixels，每个像素代表的实际距离（地图单位）
         // 分辨率除以常数获得比例尺
@@ -416,8 +457,15 @@ export default {
      * @return {[type]}    [description]
      */
     editable: function( nv, ov ) {
+      // 使用computed属性的话，切换editable后的效果没有马上出现，watch没有这个问题
       // 改变触发鼠标事件的canvas
-      this.$refs.upfitter.style[ 'pointer-events' ] = nv? 'auto' : 'none';
+      if( nv === 'map' ) {
+        this.$refs.upfitter.style[ 'pointer-events' ] = 'auto';
+        this.active = true;
+      } else {
+        this.$refs.upfitter.style[ 'pointer-events' ] = 'none';
+        this.active = false;
+      }
     },
 
   },
@@ -462,7 +510,7 @@ export default {
     css绝对单位：cm/pt/in/pc/mm
     用绝对单位来设定它的宽度，然后获取其对应的px尺寸。
      */
-    this.cm2px = function() {
+    cm2px = this.cm2px = function() {
       let d = document.createElement( 'div' );
       d.style.width = "1cm";
       document.getElementsByTagName('body')[0].appendChild( d );

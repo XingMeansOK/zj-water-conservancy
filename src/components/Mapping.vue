@@ -1,16 +1,20 @@
 <template>
   <layout :style="{height: '100%', width: '100%'}">
-      <MapMenu :params = 'params'/>
-      <MapContainer>
-        <TileLayer/>
-        <template v-for="param in params">
-          <component v-bind:is='param.layer' :param = 'param'></component>
-        </template>
-      </MapContainer>
-      <!-- 和ol的canvas同属于一个层叠上下文，且层叠顺序相同，所以后来居上，保证Upfitter在ol的canvas上面 -->
-      <Upfitter :params = 'params' :editable='editable'/>
-      <Tool @switch='editMapElements' :editable='editable'/>
-      <!-- <MapLegend :params = 'params' /> -->
+    <layout v-show="showType === 'mapping'" :style="{height: '100%', width: '100%'}">
+        <MapMenu :params = 'params'/>
+        <MapContainer>
+          <TileLayer/>
+          <template v-for="(param, index) in params">
+            <component v-bind:is='param.layer' :param = 'param' :index = 'index' @feaureLoaded='passFeatures'></component>
+          </template>
+        </MapContainer>
+        <!-- 和ol的canvas同属于一个层叠上下文，且层叠顺序相同，所以后来居上，保证Upfitter和label在ol的canvas上面 -->
+        <Label  :params = 'params' :features = 'features' :editable='editable'/>
+        <Upfitter :params = 'params' :editable='editable'/>
+        <Tool @switch='editMapElements' @draw='draw' :editable='editable' :draw='drawType'/>
+        <!-- <MapLegend :params = 'params' /> -->
+    </layout>
+    <Print v-if="showType === 'print'" />
   </layout>
 </template>
 
@@ -24,11 +28,54 @@
   import LineLayer from './LineLayer.vue'
   import PointLayer from './PointLayer.vue'
   import PolygonLayer from './PolygonLayer.vue'
+  import Print from './Print.vue'
   // import MapLegend from './Legend.vue'
   import Tool from './Tool.vue'
   import Upfitter from './Upfitter.vue'
+  import Label from './Label.vue'
   import { PolylineParam, PointParam, PolygonParam } from '../core/mappingParams.js'
   import observe from '../core/observer.js'
+
+  /****************************/
+  var source = new ol.source.Vector();
+
+  var styleFunction = function(feature) {
+    var geometry = feature.getGeometry();
+    var styles = [
+      // linestring
+      new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#ffcc33',
+          width: 2
+        })
+      })
+    ];
+
+    geometry.forEachSegment(function(start, end) {
+      var dx = end[0] - start[0];
+      var dy = end[1] - start[1];
+      var rotation = Math.atan2(dy, dx);
+      // arrows
+      styles.push(new ol.style.Style({
+        geometry: new ol.geom.Point(end),
+        image: new ol.style.Icon({
+          src: 'https://openlayers.org/en/v4.6.5/examples/data/arrow.png',
+          anchor: [0.75, 0.5],
+          rotateWithView: true,
+          rotation: -rotation
+        })
+      }));
+    });
+
+    return styles;
+  };
+  var vector = new ol.layer.Vector({
+    source: source,
+    style: styleFunction
+  });
+
+  var added = false;
+  /****************************/
 
   const mappingParams = {
     // 点
@@ -62,17 +109,23 @@
       MapMenu,
       MapContainer,
       TileLayer,
+      Label,
       Upfitter,
       Tool,
       LineLayer,
       PointLayer,
       PolygonLayer,
+      Print,
       // MapLegend,
     },
     data () {
       return {
         params: null,
-        editable: false,
+        editable: 'feature', // 当前可编辑的canvas
+        drawType: null, // 当前的涂鸦类型，null就是不涂鸦
+        features: [],
+        painting: null, // 地图上涂鸦的ol.interaction对象
+        showType: 'mapping',
       }
     },
     methods: {
@@ -105,12 +158,78 @@
         return geojson;
       },
       /**
-       * 切换至编辑图面元素
+       * 切换至编辑图面元素或者标注
+       * @param string type 要编辑的元素类型字符串
        * @return {[type]} [description]
        */
-      editMapElements() {
-        this.editable  = !this.editable;
-      }
+      editMapElements( type ) {
+        if( type === 'print' || type === 'mapping' ) {
+          this.showType = type;
+          return;
+        }
+        debugger
+        this.editable  = type;
+        if( this.editable !== 'feature' ) {
+          this.drawType = null;
+          this.__global__.olMap.removeInteraction( this.painting );
+        }
+      },
+      /**
+       * 涂鸦
+       * @param  {string} type 涂鸦的类型
+       * @return {[type]}      [description]
+       */
+      draw:function( type ) {
+
+          var map = this.__global__.olMap;
+
+          if( !added ) { map.addLayer( vector ); added = true; }
+
+          // 两次点选同一个绘制，关闭绘制，或者当当前绘制的canvas不是ol的canvas的时候也关闭绘制
+          if( type === this.drawType || this.editable !== 'feature' ) {
+            this.drawType = null;
+            map.removeInteraction( this.painting );
+            return;
+          }
+
+          this.drawType = type;
+
+          this.painting = new ol.interaction.Draw({
+            source: source,
+            type: 'LineString'
+          })
+
+          map.addInteraction( this.painting );
+      },
+      /**
+       * 矢量要素图层加载完成后，将要素信息传递给label组件
+       * @param Array featureArr 要素数组
+       * @param number index 要素对应params的索引
+       * @return {[type]} [description]
+       */
+      passFeatures( index, featureArr ) {
+        debugger
+        this.features[ index ] = featureArr.map( ( feature, i ) => {
+          var a = {};
+
+          // origin属性：标注位置的原点
+          switch ( this.params[ index ].layer ) {
+            case 'PointLayer':
+              a.origin = feature.getGeometry().getCoordinates();
+              a.name = feature.values_.HSSTNM;
+              break;
+            case 'LineLayer':
+              // a.origin =
+              break;
+            case 'PolygonLayer':
+
+              break;
+          }
+
+          return a;
+        } )
+        debugger
+      },
     },
     created() {
       // 没有路由缓存，所以，每次路由改变都会重新构建一遍组件
@@ -164,7 +283,7 @@
       };
       params.callback( allDone );
 
-    }
+    },
   }
 
 </script>

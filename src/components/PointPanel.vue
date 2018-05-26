@@ -74,6 +74,9 @@
     <div class='layercardbox' v-else key="point">
       <Card>
           <p slot="title">{{param.name}}</p>
+          <span :style="{ cursor: 'pointer', color: 'blue' }" slot="extra" @click.prevent="changeLabels" >
+              {{ labelVisible }}
+          </span>
           <span :style="{ cursor: 'pointer', color: 'blue' }" slot="extra" @click.prevent="changeVisibility" >
               {{ visible }}
           </span>
@@ -159,6 +162,13 @@
         this.param.visible = !this.param.visible;
       },
       /**
+       * 更改注记可见性
+       * @return {[type]} [description]
+       */
+      changeLabels() {
+        this.param.showLabels = !this.param.showLabels;
+      },
+      /**
        * 跳转到颜色选择页
        * @param { number } 要修改的颜色值的索引（应用于统计图表）
        * @return {[type]} [description]
@@ -231,7 +241,10 @@
     },
     computed: {
       visible: function() {
-        return this.param.visible? '隐藏' : '显示';
+        return this.param.visible? '隐藏图层' : '显示图层';
+      },
+      labelVisible: function() {
+        return this.param.showLabels? '隐藏注记' : '显示注记';
       },
       // statFields: function() {
       //   return this.param.fields.map( function( value ) { return value.field } );

@@ -53,7 +53,11 @@ export default {
     });
 
     // 地图对象保存至全局
-    this.__global__.olMap = this._olMap;
+    if( !this.__global__.olMap ) {
+      this.__global__.olMap = this._olMap
+    } else { // 打印的情况，将地图对象绑定到父组件print
+      this.$emit( 'bindMap', this._olMap );
+    }
 
     // 添加瓦片
     this.$on("addtile", l => this._olMap.addLayer( l ));

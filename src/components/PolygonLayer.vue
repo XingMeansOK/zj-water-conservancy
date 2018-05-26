@@ -11,7 +11,7 @@
 
   export default {
     name: 'Polygonlayer',
-    props: ['param'],
+    props: ['param', 'index'],
     data() {
       return {
         _olLayer: null, // 用来在内部保存layer的引用
@@ -25,6 +25,7 @@
 
        // 保存制图参数和图层对象的引用，加载完地图数据之后调用
       var param = this.param;
+      var scope = this;
 
       /**
        * 检查字符串是否是数字
@@ -54,6 +55,7 @@
              });
              if (features.length > 0) {
                vectorSource.addFeatures(features);
+               scope.$emit( 'feaureLoaded', scope.index, features );
                // 保存可以用于分级设色的字段
                param.fields = [];
                for (var variable in features[0].values_) {

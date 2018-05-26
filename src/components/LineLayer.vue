@@ -79,7 +79,7 @@
 
   export default {
     name: 'linelayer',
-    props: ['param'],
+    props: ['param', 'index'],
     data() {
       return {
         _olLayer: null, // 用来在内部保存layer的引用
@@ -108,6 +108,8 @@
              });
              if (features.length > 0) {
                vectorSource.addFeatures(features);
+
+               scope.$emit( 'feaureLoaded', scope.index, features );
              }
 
              // 通知顶层数据已经添加到地图上了
