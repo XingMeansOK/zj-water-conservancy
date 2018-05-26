@@ -97,13 +97,20 @@ export default {
         errorTipsShow_x: false,
         errorTipsShow_y: false,
         //记录选择字段
+
         allSelectedField: {},
         clickOKCount: 0,
         checkField: [],
 
-        //
         formatTipsShow_x: false,
         formatTipsShow_y: false
+
+        // _selectedField: {
+        //   x: null,
+        //   y: null,
+        //   attr: null,
+        // },
+
     }
   },
 
@@ -178,7 +185,9 @@ export default {
     },
     //上传数据第二步清空
     clean () {
+
       this.$emit("cleanSelect",null);
+
     },
     selectChange_attr (val) {
       this.allSelectedField.attr = val;
