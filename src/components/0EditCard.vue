@@ -6,7 +6,7 @@
       <div class="cont-selector">
         <div class="cont-selectItem">
           <div class="cont-selectorSlice">
-            <span>属性：</span>
+            <span>属性：edit</span>
             <Select class="selector" v-model="selectedFields.attr" @on-change="selectChange_attr">
               <Option class="selectOption" v-for="(field,index) in selectedThead" :value="field" :key="index"></Option>
             </Select>

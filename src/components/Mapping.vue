@@ -14,7 +14,7 @@
         <Tool @switch='editMapElements' @draw='draw' :editable='editable' :draw='drawType'/>
         <!-- <MapLegend :params = 'params' /> -->
     </layout>
-    <Print v-if="showType === 'print'" />
+    <!-- <Print v-if="showType === 'print'" /> -->
   </layout>
 </template>
 
@@ -28,7 +28,7 @@
   import LineLayer from './LineLayer.vue'
   import PointLayer from './PointLayer.vue'
   import PolygonLayer from './PolygonLayer.vue'
-  import Print from './Print.vue'
+  // import Print from './Print.vue'
   // import MapLegend from './Legend.vue'
   import Tool from './Tool.vue'
   import Upfitter from './Upfitter.vue'
@@ -115,7 +115,7 @@
       LineLayer,
       PointLayer,
       PolygonLayer,
-      Print,
+      // Print,
       // MapLegend,
     },
     data () {
