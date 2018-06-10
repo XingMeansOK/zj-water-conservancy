@@ -238,4 +238,9 @@ export default {
   .ivu-tabs-bar {
     margin-bottom: 6px;
   }
+  /* .ivu-tabs {
+    overflow-y:  auto !important;
+  } */
+
+
 </style>

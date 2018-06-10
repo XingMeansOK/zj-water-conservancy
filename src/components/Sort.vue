@@ -7,9 +7,10 @@
             <Icon type="arrow-up-b" v-if="upShow"></Icon>
         </a>
         <Dropdown-menu slot="list">
-            <Dropdown-item class="filterItem" name="图名">图名</Dropdown-item>
             <Dropdown-item class="filterItem" name="时间倒序">时间倒序</Dropdown-item>
             <Dropdown-item class="filterItem" name="时间顺序">时间顺序</Dropdown-item>
+            <Dropdown-item class="filterItem" name="图名">图名</Dropdown-item>
+
         </Dropdown-menu>
     </Dropdown>
   </div>
@@ -21,7 +22,7 @@ export default {
   props: ['list','allist'],
   data() {
     return {
-      sortItem: '图名',
+      sortItem: '时间倒序',
       downShow: true,
       upShow: false
     }
@@ -29,6 +30,7 @@ export default {
   methods: {
     sortFilter (key) {
       this.sortItem = key;
+      this.sortClick ()
       switch (key) {
         case "图名":
           this.list.sort(this.compare("name"));

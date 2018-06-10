@@ -59,6 +59,8 @@ export default {
 
   .searchTem {
     margin-right: 10px;
+    display: flex;
+    flex-direction: row;
   }
 
 </style>
