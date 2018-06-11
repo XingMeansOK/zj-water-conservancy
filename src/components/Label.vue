@@ -7,7 +7,7 @@ const Y = 64;
 
 export default {
   name: 'Label',
-  props: [ 'params', 'editable', 'features' ],
+  props: [ 'params', 'editable', 'features', 'printSize' ],
   data() {
     return {
       canvassize: null, // 画布大小（[width,height]）
@@ -32,6 +32,18 @@ export default {
       deep: true,
     },
     /**
+     * 监听打印尺寸，如果不为空，按打印尺寸重设
+     * @type {[type]}
+     */
+    printSize: function( nv ) {
+      debugger
+      if( nv ) {
+        this.canvasResize( nv );
+        // 全部绘制
+        this.renderLabels();
+      }
+    },
+    /**
      * 标注元素是否可编辑
      * @param  {[Boolean]} nv [新值]
      * @param  {[Boolean]} ov [旧值]
@@ -53,11 +65,12 @@ export default {
   methods: {
     /**
      * 设置画布大小
+     * @param {Array} printSize 打印尺寸
      * @return {[type]} [description]
      */
-    canvasResize() {
+    canvasResize( printSize ) {
       // 获取ol画布大小
-      this.canvassize = this.__global__.olMap.getSize();
+      this.canvassize = printSize || this.__global__.olMap.getSize();
       // 设置upfitter的canvas大小，其他方式设置的会被拉伸
       this.$refs.label.width = this.canvassize[ 0 ];
       this.$refs.label.height = this.canvassize[ 1 ];
@@ -128,16 +141,27 @@ export default {
     // 鼠标操作无视这层canvas，这样就能在下一层的ol的canvas触发鼠标事件
     this.$refs.label.style[ 'pointer-events' ] = 'none';
     this.ctxt = this.$refs.label.getContext( "2d" );
+    // this.$emit( 'passContext', this.ctxt );
+    this.$emit( 'passContext', this.$refs.label );
 
     // 设置当前canvas大小
     if( this.__global__.olMap ) {
       this.canvasResize();
     }
     // 当窗口大小改变的时候重新设置canvas的大小
-    window.onresize = () => {
-      this.canvasResize();
-      // 全部绘制
-      this.renderLabels();
+    //
+    if (window.addEventListener) {
+      window.addEventListener('resize', () => {
+        this.canvasResize();
+        // 全部绘制
+        this.renderLabels();
+      }, false);
+    } else if (window.attachEvent)  {
+      window.attachEvent('onresize', () => {
+        this.canvasResize();
+        // 全部绘制
+        this.renderLabels();
+      });
     }
 
 
