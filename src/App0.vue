@@ -3,27 +3,20 @@
 
     <div class="layout">
       <layout :style="{height: '100vh'}">
-        <div class="cont1-title">
-          <div class="cont-titlepic">
-            <img class="titlepic" src="/static/pic/title.png" />
-            <p class="homeTitle">在线制图系统</p>
-          </div>
-          <HR class="hrule" color= #0473C2 ></HR>
-
-        </div>
-          <!-- <Header> -->
-              <!-- <Menu class="menu" ref="mapmenu" mode="horizontal"  active-name="activeName"> -->
-                <!-- <div style="{display:flex;justify-content:center}">
+          <Header>
+              <Menu class="menu" ref="mapmenu" mode="horizontal"  active-name="activeName" theme="dark">
+                <div style="{display:flex;justify-content:center}">
                   <MenuItem  class="menuitem" name="home">
-
+                      <!-- <router-link tag="span" to="/" > -->
                       <div @click="togohome">
                         <Icon type="images" class="icon" size=18></Icon>
                         <span class="menuname">模板</span>
                       </div>
+                      <!-- </router-link> -->
                   </MenuItem>
                 <Icon type="chevron-right" color="#fff"></Icon>
-              </div> -->
-              <!-- <div style="{display:flex;justify-content:center}">
+              </div>
+              <div style="{display:flex;justify-content:center}">
                 <MenuItem class="menuitem" name="data" >
                   <div  @click="togodata">
                     <Icon type="stats-bars" class="icon" size=18 ></Icon>
@@ -31,15 +24,15 @@
                   </div>
                 </MenuItem>
                 <Icon type="chevron-right" color="#fff"></Icon>
-              </div> -->
-                <!-- <MenuItem  class="menuitem" name="map" >
+              </div>
+                <MenuItem  class="menuitem" name="map" >
                   <div @click="togomap">
                     <Icon type="map" class="icon" size=18 ></Icon>
                     <span class="menuname" >地图</span>
                   </div>
-                </MenuItem> -->
-              <!-- </Menu> -->
-          <!-- </Header> -->
+                </MenuItem>
+              </Menu>
+          </Header>
           <transition name="slide-fade" mode="out-in">
             <router-view/>
           </transition>
@@ -67,45 +60,44 @@ export default {
   watch: {
     '$route' () {
       //标题栏选中效果
-      // this.$refs.mapmenu.currentActiveName = this.$route.path.slice(1) || 'home';
+      this.$refs.mapmenu.currentActiveName = this.$route.path.slice(1) || 'home';
     }
   },
   methods: {
-
-    // togodata () {
-    //   switch(this.$route.path.slice(1)) {
-    //     case '':
-    //     console.log(this.$refs.mapmenu.currentActiveName);
-    //     this.$refs.mapmenu.currentActiveName = 'home';
-    //     // console.log(this.$refs.mapmenu.currentActiveName);
-    //     alert("请选择制图模板");
-    //     // console.log(this.$refs.mapmenu.currentActiveName);
-    //     break;
-    //     case 'map':
-    //     this.$router.go(-1);
-    //     break;
-    //   }
-    // },
-    // togomap () {
-    //   switch(this.$route.path.slice(1)) {
-    //     case '':
-    //     this.$refs.mapmenu.currentActiveName = 'home';
-    //     alert("请选择制图模板");
-    //     break;
-    //     case 'data':
-    //     if (this.__global__.mappingData.length > 0) {
-    //       this.$router.push({path: '/map'});
-    //     }else {
-    //       this.$refs.mapmenu.currentActiveName = 'home';
-    //       alert("请选择制图数据");
-    //     }
-    //     break;
-    //   }
-    // },
-    // togohome () {
-    //   this.__global__.mappingData = [];
-    //   this.$router.push({path: '/'});
-    // },
+    togodata () {
+      switch(this.$route.path.slice(1)) {
+        case '':
+        console.log(this.$refs.mapmenu.currentActiveName);
+        this.$refs.mapmenu.currentActiveName = 'home';
+        // console.log(this.$refs.mapmenu.currentActiveName);
+        alert("请选择制图模板");
+        // console.log(this.$refs.mapmenu.currentActiveName);
+        break;
+        case 'map':
+        this.$router.go(-1);
+        break;
+      }
+    },
+    togomap () {
+      switch(this.$route.path.slice(1)) {
+        case '':
+        this.$refs.mapmenu.currentActiveName = 'home';
+        alert("请选择制图模板");
+        break;
+        case 'data':
+        if (this.__global__.mappingData.length > 0) {
+          this.$router.push({path: '/map'});
+        }else {
+          this.$refs.mapmenu.currentActiveName = 'home';
+          alert("请选择制图数据");
+        }
+        break;
+      }
+    },
+    togohome () {
+      this.__global__.mappingData = [];
+      this.$router.push({path: '/'});
+    },
   }
 }
 </script>
@@ -124,7 +116,7 @@ export default {
   .layout{
       background: #f5f7f9;
       position: relative;
-      /* overflow: hidden; */
+      overflow: hidden;
   }
 
   /* 可以设置不同的进入和离开动画 */
@@ -207,40 +199,4 @@ export default {
     border-color: #e9e9e9;
     /* border-color: #e9e9e9; */
   }
-  .cont-titlepic {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 64px;
-  }
-  .titlepic {
-    width: 64px;
-    height: 64px;
-
-  }
-  .homeTitle {
-    font-size: 30px;
-    padding: 2px;
-    margin-left: 20px;
-
-    color: rgb(23,30,58);
-
-    font-weight: bold;
-    z-index: 1000;
-  }
-  .ivu-tabs-nav-container {
-    font-size: 18px;
-  }
-  .ivu-dropdown-item {
-    font-size: 15px !important;
-
-  }
-  .ivu-tabs-bar {
-    margin-bottom: 6px;
-  }
-  /* .ivu-tabs {
-    overflow-y:  auto !important;
-  } */
-
-
 </style>

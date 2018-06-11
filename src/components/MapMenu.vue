@@ -165,6 +165,8 @@ export default {
   .hidden {
     transform: translateX( -100% );
   }
-
+  .ivu-tabs-bar {
+    display: none;
+  }
 
 </style>

@@ -1,66 +1,64 @@
 <template>
-<div class="backgd">
-  <editCard :isShow="isShow" @cancel="editClose"
-  :selectedThead="selectedThead" :selectedTbody="selectedTbody" :selectedFields="selectedFields" :dataname="dataname"
-  @changefield="changefield"
-  @cleanSelect="cleanSelect"
-  />
+  <div class="backgd">
     <div  class="cont1-title">
-      <p class="template-title">{{templatename}}</p>
+      <div style="display:flex; align-items:center;margin-left:15px;">
+        <Icon type="connection-bars"size=28></Icon>
+        <p class="template-title" >选择数据</p>
+      </div>
       <HR width="100%" color=#f2f2f2 margin-left=20px></HR>
     </div>
-    <div class="cont_1">
-      <div class="cont2-data">
-        <div class="titlist-cont">
-          <p class="title">数据列表</p>
-          <Card class="data-list-cont" :bordered="false" style="overflow-y:auto">
-              <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="(item, index) in datalist" :key="index"  >
-                <Checkbox class="data-item" :label="item.name" size="large" >
-                  <span class="dataname">{{item.name}}</span>
-                  <span class="datatype" v-if="item.type==='default'">默认数据</span>
-                  <span class="datatype" v-if="item.type==='custom'">上传数据</span>
-                  <Icon class="delete" type="trash-a" v-if="item.type==='custom'"
-                  @click.native.prevent="deleteUpload(item.data,index)" size=20></Icon>
-                  <Icon class="edit" v-if="item.type==='custom'" type="edit"
-                  @click.native.prevent="editShow(item.data, item.name)" size=20></Icon>
-                  <Poptip class="datapic" content="提示内容qqqqqqqqqqqqqqqqqqqq" v-if="item.type==='default'">
-                    <Icon id="info"  type="information-circled" @click.native.prevent="datainf" size=20></Icon>
-                  </Poptip>
-                  <HR width="100%" color= #f2f2f2></HR>
-                </Checkbox>
+    <div class="cont1">
+      <div class="cont2-default">
+            <Card class="data-card" >
+              <div style="display:flex;flex-direction:row;align-items:center;align-items:center">
+                <div class="num"><span>1</span></div>
+                <p class="title">默认数据</p>
+              </div>
+              <CheckboxGroup class="data-list" v-model="checkgp" @on-change="checking" v-for="(item, index) in datalist" :key="index"  >
+                <Card class="dataitem-card">
+                  <Checkbox class="data-item" :label="item.name" size="large" >
+                    <span class="dataname">{{item.name}}</span>
+                  </Checkbox>
+                </Card>
               </CheckboxGroup>
-          </Card>
-        </div>
+              </Card>
+
+
       </div>
-      <div class="cont3-butn">
-        <div class="but-cont">
-          <uploadCard @uploadata="addata"/>
-            <Button id="t" class="mapping-but" shape="circle" type="primary" @click="tomapping">
-              <Icon class="icon" type="paintbrush" size=20></Icon>
-              去制图
-            </Button>
-         </div>
-      </div>
-      <div class="cont4-description">
-        <div class="data-format">
-          <p  class="title">数据格式说明</p>
-          <p class="formatdcp"> 上传数据支持xlsx、xls、csv格式，数据放置在Sheet1，第一行为属性字段。</p>
-          <Card :bordered="false">
-            <img class="formatpic" :src="formatpic">
-          </Card>
-        </div>
+     <div class="cont-addata">
+       <Card class="data-card">
+         <div style="display:flex;flex-direction:row;align-items:center;align-items:center">
+           <div style="display:flex;flex-direction:row;align-items:center;align-items:center">
+             <div class="num"><span>2</span></div>
+             <p class="title">其他数据</p>
+           </div>
+       </div>
+         <CheckboxGroup  class="data-list" v-model="checkgp" @on-change="checking" v-for="(item, index) in lastdatalist" :key="index"  >
+           <Card class="dataitem-card">
+             <Checkbox class="data-item" :label="item.name" size="large" >
+               <span class="dataname">{{item.name}}</span>
+             </Checkbox>
+           </Card>
+         </CheckboxGroup>
+         </Card>
+     </div>
+     <div class="but-cont">
+         <Button  class="mapping-but"  type="primary" @click="tomapping">
+           去制图
+         </Button>
+         <Button class="return-but"  type="primary" @click="returnTemplate">
+           返回制图模板
+         </Button>
       </div>
     </div>
-</div>
+  </div>
 </template>
 <script>
-import uploadCard from './UploadCard';
-import editCard from './EditCard';
+
 export default {
-  components: {uploadCard, editCard},
   data () {
     return {
-      formatpic: '/static/pic/description.png',
+      lastdatalist: [],
       //数据列表显示数据
       datalist: [],
       //选中数据
@@ -87,12 +85,14 @@ export default {
     switch (this.$route.query.type){
       case '1':
         this.__global__.type = 'template1';
-        this.templatename = '自然水系模板';
+        this.templatename = '自然类';
         this.__global__.allData.forEach(item => {
           if(item.template.indexOf("template1") != -1){
             this.datalist.push(item);
             // debugger
             this.namelist.push({'name':item.name,'num':1});
+          }else {
+            this.lastdatalist.push(item);
           }
         });
 
@@ -106,6 +106,8 @@ export default {
             this.namelist.push({'name':item.name, 'num':1});
 
 
+          }else {
+            this.lastdatalist.push(item);
           }
         });
         break;
@@ -118,27 +120,15 @@ export default {
             this.namelist.push({'name':item.name, 'num':1});
 
 
+          }else {
+            this.lastdatalist.push(item);
           }
         });
 
         break;
      }
   },
-  mounted () {
-    console.log("mounted");
-    var _this = this;
-    this.$on("cleanSelect", (val) => {
-      // console.log(val);
-      // this.selectedThead = uploadData
-      // this.selectedThead = uploadData.data.thead;
-      // this.selectedTbody = uploadData.data;
-      var a = this.selectedFields;
-      // debugger
-      _this.selectedFields = {};
-      console.log("news");
-      console.log(_this.selectedFields);
-    })
-  },
+
   beforeMount () {
       var _this = this;
       this.__global__.mappingData.forEach(
@@ -147,26 +137,7 @@ export default {
         });
         this.lastcheck = this.checkgp;
   },
-  mounted() {
-    this.$on( 'clean', () => {
-      this.selectedFields.x = '';
-      this.selectedFields.y = '';
-      this.selectedFields.attr = '';
-      debugger
-    } )
-  },
   methods: {
-    changefield (newData) {
-      //在datalist中查找修改的数据
-      var indexInDL = this.datalist.findIndex(item => item.name === newData.name);
-      this.datalist[indexInDL].data.fields = newData.fields;
-      //在mappingdata中查找修改的数据
-      var indexInMD = this.__global__.mappingData.findIndex(item => item.name === newData.name);
-      if(indexInMD !== -1) {
-        this.__global__.mappingData[indexInMD].data.fields = newData.fields;
-      }
-      // console.log(this.__global__.mappingData);
-    },
     checking (list){
       if (list.length > 3) {
         alert("最多选三个数据！");
@@ -190,8 +161,6 @@ export default {
           let diff = new Set([...last].filter(x => !now.has(x)));
           let unchk = Array.from(diff);
           this.__global__.mappingData.splice(this.__global__.mappingData.findIndex(item => item.name === unchk[0]), 1);
-          // console.log(this.__global__.mappingData);
-          // console.log(list);
         }
         this.lastcheck = list;
       }
@@ -214,10 +183,7 @@ export default {
       this.__global__.allData.push(updata);
 
     },
-    datainf () {
-      //检测冒泡
-      // alert("11111");
-    },
+
     tomapping () {
       if (this.__global__.mappingData.length > 0) {
         this.$router.push({path: '/map'});
@@ -225,33 +191,11 @@ export default {
         alert("请选择制图数据！");
       }
     },
-    editShow (data, name) {
-      // this.isShow = true;
-      this.isShow = !this.isShow;
-
-      this.selectedThead = data.thead;
-      this.selectedTbody = data;
-
-      // this.selectedFields = data.fields;
-      for (var variable in data.fields) {
-        if (data.fields.hasOwnProperty(variable)) {
-          this.selectedFields[ variable ] = data.fields[ variable ];
-        }
-      }
-
-    },
-    editClose (val) {
-      this.isShow = !this.isShow;
-
-      // this.isShow = val;
-      // this.isShow = false;
-    },
-    deleteUpload (data,index) {
-      this.datalist.splice(index);
-    },
-    cleanSelect () {
-      this.selectedFields = {};
+    returnTemplate () {
+      this.$router.push({path: '/'});
     }
+
+
   }
 }
 </script>
@@ -259,33 +203,24 @@ export default {
   .backgd {
     flex: 1;
     background-color: #fff;
-    overflow: hidden;
+
+    overflow-y: auto;
   }
-  .cont_1 {
+  .cont1 {
     display: flex;
     flex: 1;
 
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
   }
   .cont1-title {
     /* background-color: #ecf2f9; */
   }
-  .cont2-data {
-    /* background-color: #ccc; */
-    width: 40%;
-    height: 100%;
-  }
-  .cont3-butn{
-    /* background-color: #c6d9ec; */
-    width: 20%;
-  }
-  .cont4-description {
-    /* background-color:  #336699; */
-    width: 40%;
-  }
+
+
+
   .template-title {
-    font-size: 30px;
+    font-size: 26px;
     padding: 2px;
     margin-left: 20px;
     /* margin-left: 20px;
@@ -293,16 +228,11 @@ export default {
     color: rgb(23,30,58);
     font-weight: bold;
   }
-  .data-list-cont {
+  /* .data-list-cont {
     width: 100%;
      height: 400px;
-  }
-  .titlist-cont {
-    margin-top: 2px;
-    margin-left: 20px;
-    margin-right: 20px;
-    height: 400px;
-  }
+  } */
+
   .data-list {
     display: flex;
     flex-direction: column;
@@ -312,13 +242,24 @@ export default {
     padding: 6px;
     /* background-color: #f2f2f2; */
   }
-  .upload-but, .mapping-but {
-    height: 40px;
-    width: 150px;
+  .mapping-but {
+    height: 64px;
+    width: 280px;
     margin: 10px;
-    font-size: 13px;
-    background-color: rgb(73, 80, 96);
-    border-color: rgb(73, 80, 96);
+    font-size: 15px;
+    background-color: #0473C2;
+    box-shadow:2px 2px 3px #aaaaaa;
+  }
+  .return-but {
+    background-color: #fff;
+    color: #0473C2;
+    box-shadow:2px 2px 3px #aaaaaa;
+    height: 64px;
+    width: 280px;
+    margin: 10px;
+    font-size: 15px;
+
+
   }
   .but-cont {
     display: flex;
@@ -327,9 +268,8 @@ export default {
     margin-top: 30px;
   }
   .title {
-    font-size: 21px;
-    padding: 2px;
-    color: #fff;
+    font-size: 23px;
+    color: #584F62;
 
     /* color: rgb(35,53,77); */
     font-weight: bold;
@@ -345,25 +285,10 @@ export default {
     margin-left: 8px;
     float: right;
   }
-  .edit, .delete {
-    float: right;
-    margin-left: 8px;
 
-  }
-  /* .edit,.delete,.info:hover {
-    color: #336699;
-  } */
- .data-format {
-   margin-right: 20px;
-   margin-left: 20px;
 
- }
- .formatpic {
-   width: 80%;
-   height: 80%
- }
  .icon {
-   margin-right: 5px
+   margin-right: 5px;
  }
  .datatype {
    font-size: 10px;
@@ -376,18 +301,52 @@ export default {
    font-size: 16px;
    color: #000;
  }
- .formatdcp {
-   font-size: 10px;
- }
+
  #t:hover {
    background-color: #004080;
  }
  #info {
    z-index: 10;
  }
- @media only screen and (max-width : 500px) {
-   .cont4-description {
-     display: none;
-   }
+ .dataitem-card {
+   margin-bottom: 10px;
+   box-shadow:2px 2px 3px #aaaaaa;
+
  }
+.data-card {
+  background-color: #e4e4e4;
+  /* box-shadow:2px 2px 3px #aaaaaa; */
+
+}
+.cont2-default, .cont-addata {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  height: 100%;
+
+}
+.cont2-default {
+  /* align-items: center; */
+  justify-content: center;
+
+}
+.cont2-default {
+  margin-right: 50px;
+  /* align-items: center; */
+}
+.cont-addata {
+  margin-left: 50px;
+}
+
+.num {
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  background-color: #0473C2;
+  color: #fff;
+  line-height: 25px;
+  text-align: center;
+  margin-right: 8px;
+  font-size: 20px;
+}
 </style>
