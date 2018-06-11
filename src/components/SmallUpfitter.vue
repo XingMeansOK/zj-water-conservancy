@@ -1,22 +1,24 @@
 <template lang="html">
-  <canvas ref="upfitter" class="upfitter"></canvas>
+  <canvas ref="upfitter" class="smallupfitter"></canvas>
 </template>
 
 <script>
-// Y坐标转换需要减去的常量
-const Y = 64;
 // 单行图例的宽高
-const WIDTH_legend = 300;
-const HEIGHT_legend = 60;
+// var WIDTH_legend = 300;
+// var HEIGHT_legend = 60;
 
 export default {
-  name: 'Upfitter',
-  props: [ 'params', 'editable' ],
+  name: 'SmallUpfitter',
+  props: [
+    'params',
+    'sizeInPixel',
+    'legendRatio', // 图例占总图面的比率
+    'scaleRatio', // 比例尺占总图面的比率
+    'compassRatio', // 指北针占总图面的比率
+  ],
   data() {
     return {
-      canvassize: null, // 画布大小（[width,height]）
       ctxt: null, // 二维绘图上下文
-      legendLTWH: [], // 图例左上角点坐标和宽高[ x, y, width, height ]
       // 保存图例、比例尺、指北针以及地图标题位置宽高信息的对象
       LTWH: {
         legend: [], // 图例
@@ -30,22 +32,18 @@ export default {
       params_cache: null,
       // 指北针的图片缓存
       compassImage: null,
-      active: false, // 当前canvas是否可以编辑
+      active: true, // 当前canvas是否可以编辑
+
+      // 单行图例的宽高
+      WIDTH_legend: 300,
+      HEIGHT_legend: 60,
+
+      // 比例尺高度
+      HEIGHT_scale: 50,
+
     }
   },
   methods: {
-    /**
-     * 设置画布大小
-     * @return {[type]} [description]
-     */
-    canvasResize() {
-      // 获取ol画布大小
-      this.canvassize = this.__global__.olMap.getSize();
-      // 设置upfitter的canvas大小，其他方式设置的会被拉伸
-      this.$refs.upfitter.width = this.canvassize[ 0 ];
-      this.$refs.upfitter.height = this.canvassize[ 1 ];
-    },
-
     /**
      * 判断缓存是否可用
      * @param Object nv 参数对象
@@ -169,18 +167,16 @@ export default {
        */
       if( !ev ) {
         // 判断样式是否和缓存一致，如果一致就不更新图例样式
-        var needUpdate = !this.params.every( this.cacheUsable );
+        // 如果画布大小改变，就强制更新缓存
+        var needUpdate = this.needUpdate || !this.params.every( this.cacheUsable );
         // 擦除优化，如果是拖拽触发的重绘，因为之前已经清空了画布，这里就不需要擦除了
         this.active || this.ctxt.clearRect( ...this.LTWH.legend );
-
-//        this.ctxt.fillStyle = "rgba(255, 255, 255, 1)";
-//        this.ctxt.fillRect ( ...this.LTWH.legend );
 
         let a = this.LTWH.legend;
         let ctxt = this.ctxt;
         let scope = this;
 
-        const d = 5;
+        const d = 0;
 
         // 逐行绘制图例，list中保存绘制的任务及参数，为了在绘制图例背景之后再逐行绘制图例
         // list的元素是promise，promise resolve之后返回的数组内容对应如下：
@@ -199,10 +195,10 @@ export default {
                 imgObj.src = param.stylePic;
 
                 //待图片加载完后，将其显示在canvas上
-                imgObj.onload = function(){
+                imgObj.onload = function() {
                   let x = a[0] + d; // 图片左上角位置
-                  let y = a[1] + HEIGHT_legend * index + d;
-                  let s =  HEIGHT_legend - d * 2; // 边长
+                  let y = a[1] + scope.HEIGHT_legend * index + d;
+                  let s =  scope.HEIGHT_legend - d * 2; // 边长
                   ctxt.drawImage(this, x, y, s, s);//this即是imgObj,改变图片的大小：HEIGHT_legend - d * 2 方的
                   let imageData = scope.calcImage( x, y, s, s, param.color );
                   // 保存图片对象的缓存
@@ -215,8 +211,8 @@ export default {
               // 样式仅仅是颜色的话
               else {
                 scope.params_cache[index][ 'image' ] = param.stylePic;
-                resolve( [ index, 'fillRect', param.stylePic, a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2 ] )
-                // ctxt.fillRect( a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2 );
+                resolve( [ index, 'fillRect', param.stylePic, a[0] + d, a[1] + scope.HEIGHT_legend * index + d, scope.HEIGHT_legend - d * 2, scope.HEIGHT_legend - d * 2 ] )
+                // ctxt.fillRect( a[0] + d, a[1] + scope.HEIGHT_legend * index + d, scope.HEIGHT_legend - d * 2, scope.HEIGHT_legend - d * 2 );
               }
 
               // 更新缓存
@@ -231,14 +227,14 @@ export default {
             } else {
               // 如果样式是图片的话
               if( /\.png/i.test( param.stylePic ) ) {
-                resolve( [ index, 'putImageData', scope.params_cache[index][ 'image' ], a[0] + d, a[1] + HEIGHT_legend * index + d ] )
-                // ctxt.putImageData( scope.params_cache[index][ 'image' ], a[0] + d, a[1] + HEIGHT_legend * index + d );
+                resolve( [ index, 'putImageData', scope.params_cache[index][ 'image' ], a[0] + d, a[1] + scope.HEIGHT_legend * index + d ] )
+                // ctxt.putImageData( scope.params_cache[index][ 'image' ], a[0] + d, a[1] + scope.HEIGHT_legend * index + d );
               }
               // 样式仅仅是颜色的话
               else {
                 scope.params_cache[index][ 'image' ] = param.stylePic;
-                resolve( [ index, 'fillRect', param.stylePic, a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2] )
-                // ctxt.fillRect( a[0] + d, a[1] + HEIGHT_legend * index + d, HEIGHT_legend - d * 2, HEIGHT_legend - d * 2 );
+                resolve( [ index, 'fillRect', param.stylePic, a[0] + d, a[1] + scope.HEIGHT_legend * index + d, scope.HEIGHT_legend - d * 2, scope.HEIGHT_legend - d * 2] )
+                // ctxt.fillRect( a[0] + d, a[1] + scope.HEIGHT_legend * index + d, scope.HEIGHT_legend - d * 2, scope.HEIGHT_legend - d * 2 );
               }
 
             }
@@ -250,8 +246,6 @@ export default {
           } )
 
         } )
-
-        ctxt.font="bold 20px Arial";
 
         // then中传入的参数是二维数组，包含了所有promise的resolve参数
         Promise.all( list ).then( ( o ) => {
@@ -268,8 +262,9 @@ export default {
             }
 
             // 绘制文字
-            ctxt.fillStyle="#fff";
-            ctxt.fillText( scope.params[ value[0] ].name, a[0] + d * 2 + HEIGHT_legend, a[1] + HEIGHT_legend * value[0] + d + HEIGHT_legend / 2 );
+            ctxt.fillStyle = "#fff";
+            ctxt.font = `bold ${ scope.HEIGHT_legend / 3 }px Arial`;
+            ctxt.fillText( scope.params[ value[0] ].name, a[0] + d * 2 + scope.HEIGHT_legend, a[1] + scope.HEIGHT_legend * value[0] + d + scope.HEIGHT_legend / 2 );
           } )
         } )
 
@@ -338,8 +333,7 @@ export default {
         // this.ctxt.fillRect ( ...a );
 
         // 绘制文字
-
-        this.ctxt.font="bold 20px Arial";
+        this.ctxt.font = `bold ${ this.HEIGHT_scale / 3 } Arial`;
         this.ctxt.fillStyle="#058";
         this.ctxt.fillText( s[1] * c / 100 + "m", a[0] + 8, a[1] + a[3] / 2 );
 
@@ -371,11 +365,14 @@ export default {
     updateLTWH: function( ele, ev, dx, dy ) {
       let e = ev || event;
       // 鼠标在canvas坐标坐标系下的坐标
-      let x = e.clientX;
+      // 坐标转换参数
+      const X = this.$refs.upfitter.offsetParent.offsetLeft;
+      const Y = this.$refs.upfitter.offsetParent.offsetTop;
+      let x = e.clientX - X;
       let y = e.clientY - Y;
 
       // 清空画布
-      this.ctxt.clearRect( 0, 0, ...this.canvassize );
+      this.ctxt.clearRect( 0, 0, ...this.sizeInPixel );
 
       // 更新比例尺位置
       this.LTWH[ ele ][0] = x - dx;
@@ -395,33 +392,36 @@ export default {
 
       /**
        * [计算新的位置]
-       * @param  {[string]} element [当前元素的元素名]
+       * @param  {[boolean]} element [是否重置位置]
        * @return {[type]}         [description]
        */
-      return function( element ) {
+      return function( reset ) {
 
         // 图例
         const COUNT = this.params.length;
         let a = this.LTWH[ 'legend' ];
+        this.WIDTH_legend = this.sizeInPixel[ 0 ] * this.legendRatio;
+        this.HEIGHT_legend = this.WIDTH_legend / 5;
         // x
-        a[ 0 ] = this.canvassize[ 0 ] - WIDTH_legend - 15;
+        a[ 0 ] = reset? this.sizeInPixel[ 0 ] - this.WIDTH_legend - 15 : a[ 0 ];
         // y
-        a[ 1 ] = this.canvassize[ 1 ] - HEIGHT_legend * COUNT - 15;
+        a[ 1 ] = reset? this.sizeInPixel[ 1 ] - this.HEIGHT_legend * COUNT - 15 : a[ 1 ];
         // width
-        a[ 2 ] = WIDTH_legend;
+        a[ 2 ] = this.WIDTH_legend;
         // height
-        a[ 3 ] = HEIGHT_legend * COUNT;
+        a[ 3 ] = this.HEIGHT_legend * COUNT;
 
         // 比例尺
+        this.HEIGHT_scale = this.sizeInPixel[ 1 ] * this.scaleRatio;
         a = this.LTWH[ 'scale' ];
         // x
-        a[ 0 ] = this.LTWH[ 'legend' ][0] - 300 - 50;
+        a[ 0 ] = 15;
         // y
-        a[ 1 ] = this.canvassize[ 1 ] - 50 - 15;
+        a[ 1 ] = this.sizeInPixel[ 1 ] - this.HEIGHT_scale - 10;
         // width
         a[ 2 ] = 300;
         // height
-        a[ 3 ] = 50;
+        a[ 3 ] = this.HEIGHT_scale;
 
         // 指北针
         a = this.LTWH[ 'compass' ];
@@ -435,6 +435,26 @@ export default {
         a[ 3 ] = 150;
       }
     }(),
+    /**
+     * 重绘
+     * @type {Object}
+     * @param {boolean} reset 是否重置位置
+     */
+    r( reset ) {
+      // 清空画布
+      this.ctxt.clearRect( 0, 0, ...this.sizeInPixel );
+      // 计算各个图面元素的初始位置和宽高
+      this.calcLTWH( reset );
+      // 如果画布大小变化，就禁用缓存
+      this.needUpdate = true;
+      // 全部绘制
+      for ( var variable in this.LTWH ) {
+        if (this.LTWH.hasOwnProperty(variable)) {
+          this[ `update${variable}` ]();
+        }
+      }
+      this.needUpdate = false;
+    },
   },
   watch: {
     params: {
@@ -448,23 +468,39 @@ export default {
       deep: true,
     },
     /**
-     * 图面元素是否可编辑
-     * @param  {[Boolean]} nv [新值]
-     * @param  {[Boolean]} ov [旧值]
-     * @return {[type]}    [description]
+     * 尺寸与打印用地图同步
+     * @param  {[type]} sizeInPixel [description]
+     * @return {[type]}             [description]
      */
-    editable: function( nv, ov ) {
-      // 使用computed属性的话，切换editable后的效果没有马上出现，watch没有这个问题
-      // 改变触发鼠标事件的canvas
-      if( nv === 'map' ) {
-        this.$refs.upfitter.style[ 'pointer-events' ] = 'auto';
-        this.active = true;
-      } else {
-        this.$refs.upfitter.style[ 'pointer-events' ] = 'none';
-        this.active = false;
-      }
+    sizeInPixel: function( nv ) {
+      // 设置upfitter的canvas大小，其他方式设置的会被拉伸
+      this.$refs.upfitter.width = nv[ 0 ];
+      this.$refs.upfitter.height = nv[ 1 ];
+      // 重绘图面整饰
+      // 如果画布大小变化，就禁用缓存
+      this.r( true );
     },
-
+    /**
+     * 图例占总图面的比率
+     * @type {[type]}
+     */
+    legendRatio: function( nv ) {
+      this.r( false );
+    },
+    /**
+     * 比例尺占总图面的比率
+     * @type {[type]}
+     */
+    scaleRatio: function( nv ) {
+      this.r( false );
+    },
+    /**
+     * 指北针占总图面的比率
+     * @type {[type]}
+     */
+    compassRatio: function( nv ) {
+      this.r( false );
+    },
   },
   created() {
     // 初始化参数缓存。保存和图例更新相关的信息
@@ -480,48 +516,33 @@ export default {
   },
   mounted() {
     // 鼠标操作无视这层canvas，这样就能在下一层的ol的canvas触发鼠标事件
-    this.$refs.upfitter.style[ 'pointer-events' ] = 'none';
+    // this.$refs.upfitter.style[ 'pointer-events' ] = 'none';
     this.ctxt = this.$refs.upfitter.getContext( "2d" );
 
-    // 设置大小
-    if( this.__global__.olMap ) {
-      this.canvasResize();
-    }
-    var r = () => {
-      this.canvasResize();
-      // 计算各个图面元素的初始位置和宽高
-      this.calcLTWH();
-      // 全部绘制
-      for ( var variable in scope.LTWH ) {
-        if (this.LTWH.hasOwnProperty(variable)) {
-          this[ `update${variable}` ]();
-        }
-      }
-    }
-    // 当窗口大小改变的时候重新设置canvas的大小
-    if (window.addEventListener) {
-      window.addEventListener('resize', r, false);
-    } else if (window.attachEvent)  {
-      window.attachEvent('onresize', r);
-    }
+    // 初始尺寸
+    // 设置upfitter的canvas大小，其他方式设置的会被拉伸
+    this.$refs.upfitter.width = this.sizeInPixel[ 0 ];
+    this.$refs.upfitter.height = this.sizeInPixel[ 1 ];
 
     // 计算各个图面元素的初始位置和宽高
-    this.calcLTWH();
+    this.calcLTWH( true );
 
     /*
     有问题！！！！
     css绝对单位：cm/pt/in/pc/mm
     用绝对单位来设定它的宽度，然后获取其对应的px尺寸。
      */
-    window.cm2px = this.cm2px = function() {
-      let d = document.createElement( 'div' );
-      d.style.width = "1cm";
-      document.getElementsByTagName('body')[0].appendChild( d );
-      let w = d.offsetWidth;
-      document.getElementsByTagName('body')[0].removeChild( d );
-      // 1cm = w px
-      return w;
-    }()
+    if( !window.cm2px ) {
+      window.cm2px = this.cm2px = function() {
+        let d = document.createElement( 'div' );
+        d.style.width = "1cm";
+        document.getElementsByTagName('body')[0].appendChild( d );
+        let w = d.offsetWidth;
+        document.getElementsByTagName('body')[0].removeChild( d );
+        // 1cm = w px
+        return w;
+      }()
+    }
 
     // 初始绘制
     for (var variable in this.LTWH) {
@@ -531,25 +552,28 @@ export default {
     }
 
     // 绑定鼠标点击事件
-    this.$refs.upfitter.onmousedown = ( ev ) => {
+    this.$refs.upfitter.onmousedown = function( ev ) {
       // 鼠标事件的y坐标需要坐标转化，减去上面一条header
+      // 坐标转换参数
+      const X = scope.$refs.upfitter.offsetParent.offsetLeft;
+      const Y = scope.$refs.upfitter.offsetParent.offsetTop;
       var e = ev || event;
-      var x = e.clientX;
+      var x = e.clientX - X;
       var y = e.clientY - Y;
       // 判断是否点击在任何一个图面元素上
-      for ( var variable in this.LTWH ) {
-        if ( this.LTWH.hasOwnProperty(variable) ) {
-          let a = this.LTWH[ variable ]
+      for ( var variable in scope.LTWH ) {
+        if ( scope.LTWH.hasOwnProperty(variable) ) {
+          let a = scope.LTWH[ variable ]
           // 判断是否点在了元素上，直接用isPointInPath？
           if( ( x >= a[0] && x <= ( a[0] + a[2] ) ) && ( y >= a[1] && y <= ( a[1] + a[3] ) ) ) {
             // 鼠标点击位置与元素左上角的差值
             let dx = x - a[0];
             let dy = y - a[1];
-            this.$refs.upfitter.onmousemove = ( e ) => {
-              this[ `update${variable}` ]( e, dx, dy );
+            scope.$refs.upfitter.onmousemove = ( e ) => {
+              scope[ `update${variable}` ]( e, dx, dy );
             }
             // 鼠标抬起后清空事件监听
-            this.$refs.upfitter.onmouseup = function() {
+            scope.$refs.upfitter.onmouseup = function() {
               this.onmousemove = null;
               this.onmouseup = null;
             }
@@ -573,7 +597,9 @@ export default {
 </script>
 
 <style lang="css">
-  .upfitter {
+  .smallupfitter {
     position: absolute;
+    top: 0;
+    left: 0;
   }
 </style>

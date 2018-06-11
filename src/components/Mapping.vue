@@ -2,19 +2,29 @@
   <layout :style="{height: '100%', width: '100%'}">
     <layout v-show="showType === 'mapping'" :style="{height: '100%', width: '100%'}">
         <MapMenu :params = 'params'/>
-        <MapContainer>
+        <MapContainer
+          :size='size'
+          :resolution='resolution'
+          :center='center'
+        >
           <TileLayer/>
           <template v-for="(param, index) in params">
             <component v-bind:is='param.layer' :param = 'param' :index = 'index' @feaureLoaded='passFeatures'></component>
           </template>
         </MapContainer>
         <!-- 和ol的canvas同属于一个层叠上下文，且层叠顺序相同，所以后来居上，保证Upfitter和label在ol的canvas上面 -->
-        <Label  :params = 'params' :features = 'features' :editable='editable'/>
+        <Label  :params = 'params' :features = 'features' :editable='editable' @passContext='bindLabelContext' :printSize = 'printSize'/>
         <Upfitter :params = 'params' :editable='editable'/>
         <Tool @switch='editMapElements' @draw='draw' :editable='editable' :draw='drawType'/>
         <!-- <MapLegend :params = 'params' /> -->
     </layout>
-    <Print v-if="showType === 'print'" />
+    <Print
+      v-if="showType === 'print'"
+      @toPrintRize='toPrintRize'
+      @backToMapping='backToMapping'
+      :params = 'params'
+      :labelContext='labelContext'
+    />
   </layout>
 </template>
 
@@ -126,9 +136,39 @@
         features: [],
         painting: null, // 地图上涂鸦的ol.interaction对象
         showType: 'mapping',
+        labelContext: null,
+
+        // 地图尺寸，用于打印前后设置尺寸
+        size: null,
+        // 分辨率
+        resolution: null,
+        // 地图中心经纬度
+        center: null,
       }
     },
     methods: {
+      /**
+       * 绑定canvas上下文到当前组件
+       * @param  {[type]} ctxt [description]
+       * @return {[type]}      [description]
+       */
+      bindLabelContext: function( ctxt ) {
+        this.labelContext = ctxt;
+      },
+      /**
+       * 设置地图打印尺寸
+       * @return {[type]} [description]
+       */
+      toPrintRize( size ){
+        this.size = size;
+      },
+      /**
+       * 返回制图界面
+       * @return {[type]} [description]
+       */
+      backToMapping() {
+        this.showType = 'mapping';
+      },
       /**
        * 根据excel读到的数组生成geojson对象
        * @param  {[Array]} a      [excel读到的数组对象]
